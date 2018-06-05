@@ -37,8 +37,7 @@ void MainForm::Tick() {
 
 	//map.tick();
 	
-	//.render();
-
+	//map.render();
 }
 
 void  MainForm::on_startButton_clicked() {
