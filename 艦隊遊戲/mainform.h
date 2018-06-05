@@ -4,8 +4,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#include <Qtime>
 #include <qtimer.h>
+#include <Qtime>
 #include "ui_mainform.h"
 
 using namespace std;
