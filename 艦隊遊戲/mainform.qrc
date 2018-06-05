@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="MainForm"/>
+  <qresource>
+    <file>Resources/image.jpg</file>
+  </qresource>
+</RCC>
