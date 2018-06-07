@@ -7,6 +7,7 @@
 #include <Qtime>
 #include <qtimer.h>
 #include "ui_mainform.h"
+#include "GLOBALSETTINGS.h"
 
 using namespace std;
 
@@ -22,6 +23,8 @@ private:
 	Ui::MainFormClass ui;
 
 	QTime * GameTime;
+protected:
+	void paintEvent(QPaintEvent *event) override;
 
 private slots:
 	void on_startButton_clicked();

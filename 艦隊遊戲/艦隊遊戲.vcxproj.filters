@@ -36,6 +36,9 @@
     <ClCompile Include="mainform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vessel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainform.h">
@@ -51,5 +54,16 @@
     <QtRcc Include="mainform.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vessel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="location_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLOBALSETTINGS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

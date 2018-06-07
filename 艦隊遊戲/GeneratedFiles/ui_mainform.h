@@ -47,8 +47,7 @@ public:
     QLabel *Label_BattleLog;
     QTextEdit *TextBox_BattleLog;
     QLabel *Label_Map;
-    QFrame *frame;
-    QWidget *widget;
+    QLabel *Label_Battlefield;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -164,15 +163,14 @@ public:
         Label_Map->setAutoFillBackground(false);
         Label_Map->setStyleSheet(QStringLiteral("QLabel{background-color: black}"));
         Label_Map->setFrameShadow(QFrame::Plain);
-        frame = new QFrame(centralWidget);
-        frame->setObjectName(QStringLiteral("frame"));
-        frame->setGeometry(QRect(410, 270, 120, 80));
-        frame->setFrameShape(QFrame::StyledPanel);
-        frame->setFrameShadow(QFrame::Raised);
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(210, 220, 120, 80));
+        Label_Battlefield = new QLabel(centralWidget);
+        Label_Battlefield->setObjectName(QStringLiteral("Label_Battlefield"));
+        Label_Battlefield->setGeometry(QRect(20, 40, 570, 570));
+        Label_Battlefield->setStyleSheet(QStringLiteral("QLabel{background-color: green}"));
         MainFormClass->setCentralWidget(centralWidget);
+        Label_Map->raise();
+        Label_Battlefield->raise();
+        layoutWidget->raise();
         menuBar = new QMenuBar(MainFormClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1298, 21));
@@ -198,7 +196,8 @@ public:
         startButton->setText(QApplication::translate("MainFormClass", "START", nullptr));
         stopButton->setText(QApplication::translate("MainFormClass", "STOP", nullptr));
         Label_BattleLog->setText(QApplication::translate("MainFormClass", "BattleLog:", nullptr));
-        Label_Map->setText(QApplication::translate("MainFormClass", "TextLabel", nullptr));
+        Label_Map->setText(QString());
+        Label_Battlefield->setText(QString());
     } // retranslateUi
 
 };

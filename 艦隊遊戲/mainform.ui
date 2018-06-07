@@ -180,35 +180,28 @@
      <enum>QFrame::Plain</enum>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QLabel" name="Label_Battlefield">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>270</y>
-      <width>120</width>
-      <height>80</height>
+      <x>20</x>
+      <y>40</y>
+      <width>570</width>
+      <height>570</height>
      </rect>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+    <property name="styleSheet">
+     <string notr="true">QLabel{background-color: green}</string>
     </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-   </widget>
-   <widget class="QWidget" name="widget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>220</y>
-      <width>120</width>
-      <height>80</height>
-     </rect>
+    <property name="text">
+     <string/>
     </property>
    </widget>
+   <zorder>Label_Map</zorder>
+   <zorder>Label_Battlefield</zorder>
+   <zorder>layoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
