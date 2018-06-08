@@ -27,72 +27,80 @@ MainForm::MainForm(QWidget *parent)
 	//GameTimer Setup
 	GameTimer = new QTimer(this);
 	connect(GameTimer, SIGNAL(timeout()), this, SLOT(Tick()));
-	GameTimer->setInterval(1000);
+	GameTimer->setInterval(UPDATE_PER_MS);
+
+	test.move(-30, 3);
 }
 
 void MainForm::paintEvent(QPaintEvent *event) {
-	static int h=0;
-	static int s=255;
-	static int v=120;
-	//Initialize Canvas
-	QPixmap Canvas_Battlefield(MAP_WIDTH, MAP_HEIGHT);
-	Canvas_Battlefield.fill(QColor("transparent"));
-	//Initialize Painter
-	QPainter painter(&Canvas_Battlefield);
-	painter.setPen(QColor("green"));
-	
-
 
 	
-
-//Modifications
-	if (h >= 360) h = 0;
-	QColor test;
-	test.setHsl(h += 1, s, v);
-	painter.fillRect(0, 0, 100, 100, test);
-	//ground
-	//vessel
-	//missle
-
-
+		static int h = 0;
+		static int s = 255;
+		static int v = 120;
+		//Initialize Canvas
+		QPixmap Canvas_Battlefield(MAP_WIDTH, MAP_HEIGHT);
+		Canvas_Battlefield.fill(QColor("transparent"));
+		//Initialize Painter
+		QPainter painter(&Canvas_Battlefield);
+		painter.setPen(QColor("green"));
 
 
-	//Draw Line
-	painter.setPen(QColor("white"));
-	double per_width = (double)MAP_WIDTH / MAP_INTERVALS;
-	double per_height = (double)MAP_HEIGHT / MAP_INTERVALS;
-	for (int i = 0; i < MAP_INTERVALS; i++) {
-		painter.drawLine(
-			0,
-			i*per_height,
-			MAP_WIDTH,
-			i*per_height
-		);
-	}
-	for (int i = 0; i < MAP_INTERVALS; i++) {
-		painter.drawLine(
-			i*per_width,
-			0,
-			i*per_width,
-			MAP_HEIGHT
-		);
-	}
 
 
-//Render
-	ui.Label_Battlefield->setPixmap(Canvas_Battlefield);
 
+		//Modifications
+		if (h >= 360) h = 0;
+		QColor test;
+		test.setHsl(h += 1, s, v);
+		//painter.fillRect(0, 0, 100, 100, test);
+		//ground
+		//vessel
+		painter.fillRect(this->test.Location.x * (MAP_WIDTH / MAP_INTERVALS), this->test.Location.y * (MAP_HEIGHT / MAP_INTERVALS), 10, 10, test);
+		//missle
+
+
+
+
+		//Draw Line
+		painter.setPen(QColor("white"));
+		double per_width = (double)MAP_WIDTH / MAP_INTERVALS;
+		double per_height = (double)MAP_HEIGHT / MAP_INTERVALS;
+		for (int i = 0; i < MAP_INTERVALS; i++) {
+			painter.drawLine(
+				0,
+				i*per_height,
+				MAP_WIDTH,
+				i*per_height
+			);
+		}
+		for (int i = 0; i < MAP_INTERVALS; i++) {
+			painter.drawLine(
+				i*per_width,
+				0,
+				i*per_width,
+				MAP_HEIGHT
+			);
+		}
+
+
+		//Render
+		ui.Label_Battlefield->setPixmap(Canvas_Battlefield);
 }
 
 void MainForm::Tick() {
-	//update GameTime
-	*GameTime = GameTime->addSecs(15);
-	qDebug() << GameTime->toString("hh:mm:ss");
-	ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
-
+	round += 1;
 	//map.tick();
+	test.tick();
+	if (round == (1000.0 / UPDATE_PER_MS)) {
+		round = 0;
+		//update GameTime
+		*GameTime = GameTime->addSecs(15);
+		qDebug() << GameTime->toString("hh:mm:ss");
+		ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
+		//map.render();
+	}
 	
-	//map.render();
 }
 
 void  MainForm::on_startButton_clicked() {

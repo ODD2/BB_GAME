@@ -28,6 +28,12 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\Vessels">
+      <UniqueIdentifier>{6e4b0f2f-0454-4278-96ab-8a69d5131468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Vessels">
+      <UniqueIdentifier>{750b721b-978f-4231-a4c9-302f6948b266}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,8 +42,23 @@
     <ClCompile Include="mainform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vessel.cpp">
+    <ClCompile Include="missile.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vessel.cpp">
+      <Filter>Source Files\Vessels</Filter>
+    </ClCompile>
+    <ClCompile Include="BB.cpp">
+      <Filter>Source Files\Vessels</Filter>
+    </ClCompile>
+    <ClCompile Include="CG.cpp">
+      <Filter>Source Files\Vessels</Filter>
+    </ClCompile>
+    <ClCompile Include="CV.cpp">
+      <Filter>Source Files\Vessels</Filter>
+    </ClCompile>
+    <ClCompile Include="DD.cpp">
+      <Filter>Source Files\Vessels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +77,32 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vessel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="location_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GLOBALSETTINGS.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vessel.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="BB.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="CG.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="CV.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="DD.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="VESSELHEADER.h">
+      <Filter>Header Files\Vessels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

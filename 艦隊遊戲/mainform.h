@@ -8,6 +8,7 @@
 #include <qtimer.h>
 #include "ui_mainform.h"
 #include "GLOBALSETTINGS.h"
+#include "VESSELHEADER.h"
 
 using namespace std;
 
@@ -21,8 +22,10 @@ public:
 private:
 	
 	Ui::MainFormClass ui;
-
 	QTime * GameTime;
+	int round;
+	BB test;
+
 protected:
 	void paintEvent(QPaintEvent *event) override;
 
