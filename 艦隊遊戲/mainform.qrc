@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="MainForm"/>
   <qresource>
+    <file>Resources/BB.png</file>
     <file>Resources/image.jpg</file>
   </qresource>
 </RCC>

@@ -29,43 +29,63 @@ MainForm::MainForm(QWidget *parent)
 	connect(GameTimer, SIGNAL(timeout()), this, SLOT(Tick()));
 	GameTimer->setInterval(UPDATE_PER_MS);
 
-	test.move(-30, 3);
+	test.move(-30, 18);
 }
 
 void MainForm::paintEvent(QPaintEvent *event) {
 
-	
-		static int h = 0;
-		static int s = 255;
-		static int v = 120;
-		//Initialize Canvas
+
+
+//Initialize Canvas
 		QPixmap Canvas_Battlefield(MAP_WIDTH, MAP_HEIGHT);
 		Canvas_Battlefield.fill(QColor("transparent"));
-		//Initialize Painter
+
+//Initialize Painter
 		QPainter painter(&Canvas_Battlefield);
 		painter.setPen(QColor("green"));
 
 
 
-
-
-		//Modifications
+//Modifications to Canvas
+		/*
+		static int h = 0;
+		static int s = 255;
+		static int v = 120;
 		if (h >= 360) h = 0;
 		QColor test;
-		test.setHsl(h += 1, s, v);
-		//painter.fillRect(0, 0, 100, 100, test);
+		test.setHsl(h += 1, s, v);*/
+
+
+
 		//ground
+
+
+
+
 		//vessel
-		painter.fillRect(this->test.Location.x * (MAP_WIDTH / MAP_INTERVALS), this->test.Location.y * (MAP_HEIGHT / MAP_INTERVALS), 10, 10, test);
+
+			/*test*/
+			QPixmap pixmap(":/Resources/BB.png");
+			pixmap = pixmap.scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+			QMatrix rm;
+			rm.rotate(-1*this->test.angle);
+			pixmap = pixmap.transformed(rm);
+			painter.drawPixmap(this->test.Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH/2, this->test.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT/2, pixmap);
+			/*test*/
+
+
 		//missle
+
+
+
 
 
 
 
 		//Draw Line
 		painter.setPen(QColor("white"));
-		double per_width = (double)MAP_WIDTH / MAP_INTERVALS;
-		double per_height = (double)MAP_HEIGHT / MAP_INTERVALS;
+		double per_width = MAP_WIDTH / MAP_INTERVALS;
+		double per_height = MAP_HEIGHT / MAP_INTERVALS;
 		for (int i = 0; i < MAP_INTERVALS; i++) {
 			painter.drawLine(
 				0,
@@ -84,7 +104,7 @@ void MainForm::paintEvent(QPaintEvent *event) {
 		}
 
 
-		//Render
+//Render Canvas+
 		ui.Label_Battlefield->setPixmap(Canvas_Battlefield);
 }
 

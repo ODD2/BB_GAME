@@ -10,7 +10,6 @@ vessel::~vessel()
 {
 }
 
-
 bool vessel::hit(missile& missile_obj) {
 	if (Distance_2D(Location, missile_obj.Location) < 1.5) {
 		HP -= missile_obj.damage;
@@ -36,12 +35,14 @@ void vessel::tick() {
 		if (Location.y < 0) Location.y = 0;
 		else if (Location.y > MAP_INTERVALS) Location.y = MAP_INTERVALS;
 	}
+
+	//cool down tick
 	if (atkCD) {
-		atkCD -= (double)PER_SECOND_IN_GAME * UPDATE_PER_MS / 1000;
-		//if (atkCD < 0) atkCD = 0;
+		atkCD -= PER_SECOND_IN_GAME * UPDATE_PER_MS / 1000;
+		if (atkCD < 0) atkCD = 0;
 	}
 	if (defCD) {
-		defCD -= (double)PER_SECOND_IN_GAME * UPDATE_PER_MS / 1000;
-		//if (defCD < 0) defCD = 0;
+		defCD -= PER_SECOND_IN_GAME * UPDATE_PER_MS / 1000;
+		if (defCD < 0) defCD = 0;
 	}
 }

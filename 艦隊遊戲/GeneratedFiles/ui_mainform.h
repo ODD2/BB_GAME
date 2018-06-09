@@ -161,7 +161,7 @@ public:
         Label_Map->setObjectName(QStringLiteral("Label_Map"));
         Label_Map->setGeometry(QRect(20, 40, 570, 570));
         Label_Map->setAutoFillBackground(false);
-        Label_Map->setStyleSheet(QStringLiteral("QLabel{background-color: black}"));
+        Label_Map->setStyleSheet(QStringLiteral("QLabel{background-color: gray}"));
         Label_Map->setFrameShadow(QFrame::Plain);
         Label_Battlefield = new QLabel(centralWidget);
         Label_Battlefield->setObjectName(QStringLiteral("Label_Battlefield"));
