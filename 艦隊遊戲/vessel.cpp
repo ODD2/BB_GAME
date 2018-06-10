@@ -6,12 +6,21 @@ vessel::vessel()
 {
 }
 
+vessel::vessel(string name) {
+	this->name = name;
+}
+
+vessel::vessel(string name,const _2D& Location) {
+	this->name = name;
+	this->Location = Location;
+}
+
 vessel::~vessel()
 {
 }
 
 bool vessel::hit(missile& missile_obj) {
-	if (Distance_2D(Location, missile_obj.Location) < 1.5) {
+	if (Distance_2D(Location, missile_obj.Location.to_2D()) < 1.5) {
 		HP -= missile_obj.damage;
 		return HP < 0;
 	}

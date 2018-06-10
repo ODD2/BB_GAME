@@ -15,11 +15,17 @@ struct _3D {
 	_3D(const _2D& rhs) {
 		x = rhs.x;
 		y = rhs.y;
+		z = 0;
 	}
+	_3D(double x, double y, double z):x(x),y(y),z(z) {}
 
 	double x;
 	double y;
 	double z;
+
+	inline _2D to_2D() {
+		return { x,y };
+	}
 };
 
 
@@ -60,7 +66,7 @@ inline double Distance_2D(_2D const & lhs, _2D const & rhs) {
 }
 
 inline bool OutOfRange_3D(_3D const & rhs) {
-	if (rhs.x < 0 || rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS || rhs.z < 0 || rhs.z > MAP_INTERVALS) {
+	if (rhs.x < 0 || rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS || rhs.z < -1*MAP_INTERVALS || rhs.z > MAP_INTERVALS) {
 		return true;
 	}
 	return false;

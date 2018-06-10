@@ -13,6 +13,7 @@ class CV :
 	public vessel
 {
 public:
+	using vessel::vessel;
 	CV();
 	virtual ~CV();
 

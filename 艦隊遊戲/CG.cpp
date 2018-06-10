@@ -16,7 +16,7 @@ CG::~CG()
 bool CG::defense(missile& missile_obj) {
 	if (!defCD) {
 		defCD = CG_DEFENSE_CD;
-		if (Distance_2D(this->Location, missile_obj.Location) < CG_DEFENSE_RANGE) {
+		if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < CG_DEFENSE_RANGE) {
 
 			return true;
 		}

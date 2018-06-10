@@ -112,6 +112,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="battlefield.cpp" />
     <ClCompile Include="BB.cpp" />
     <ClCompile Include="CG.cpp" />
     <ClCompile Include="CV.cpp" />
@@ -131,6 +132,7 @@
     <QtRcc Include="mainform.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="battlefield.h" />
     <ClInclude Include="BB.h" />
     <ClInclude Include="CG.h" />
     <ClInclude Include="CV.h" />

@@ -1,6 +1,7 @@
 #include "mainform.h"
 #include <QtDebug>
 #include <qpainter.h>
+#include <qmovie.h>
 
 MainForm::MainForm(QWidget *parent)
 	: QMainWindow(parent)
@@ -14,8 +15,8 @@ MainForm::MainForm(QWidget *parent)
 
 
 	//Label_Map Setup
-	QImage Image_Map(":/Resources/image.jpg");
-	Image_Map = Image_Map.scaled(QSize(MAP_WIDTH, MAP_HEIGHT),Qt::KeepAspectRatio);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
+	QImage Image_Map("./Resources/image.jpg");
+	Image_Map = Image_Map.scaled(MAP_WIDTH, MAP_HEIGHT);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
 	ui.Label_Map->setPixmap(QPixmap::fromImage(Image_Map));
 		
 	
@@ -33,7 +34,7 @@ MainForm::MainForm(QWidget *parent)
 }
 
 void MainForm::paintEvent(QPaintEvent *event) {
-
+	static double radar_angle = 0.0;
 
 
 //Initialize Canvas
@@ -42,9 +43,7 @@ void MainForm::paintEvent(QPaintEvent *event) {
 
 //Initialize Painter
 		QPainter painter(&Canvas_Battlefield);
-		painter.setPen(QColor("green"));
-
-
+		painter.setPen(QColor("green"));	
 
 //Modifications to Canvas
 		/*
@@ -65,7 +64,7 @@ void MainForm::paintEvent(QPaintEvent *event) {
 		//vessel
 
 			/*test*/
-			QPixmap pixmap(":/Resources/BB.png");
+			QPixmap pixmap("./Resources/B.png");
 			pixmap = pixmap.scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 			QMatrix rm;
 			rm.rotate(-1*this->test.angle);
@@ -83,7 +82,7 @@ void MainForm::paintEvent(QPaintEvent *event) {
 
 
 		//Draw Line
-		painter.setPen(QColor("white"));
+		painter.setPen(QColor(255,255,255,60));
 		double per_width = MAP_WIDTH / MAP_INTERVALS;
 		double per_height = MAP_HEIGHT / MAP_INTERVALS;
 		for (int i = 0; i < MAP_INTERVALS; i++) {

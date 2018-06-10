@@ -24,7 +24,7 @@ private:
 	Ui::MainFormClass ui;
 	QTime * GameTime;
 	int round;
-	BB test;
+	BB test = BB("test");
 
 protected:
 	void paintEvent(QPaintEvent *event) override;

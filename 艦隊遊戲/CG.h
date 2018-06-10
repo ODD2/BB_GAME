@@ -13,6 +13,7 @@ class CG :
 	public vessel
 {
 public:
+	using vessel::vessel;
 	CG();
 	virtual ~CG();
 

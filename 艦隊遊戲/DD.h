@@ -13,6 +13,7 @@ class DD :
 	public vessel
 {
 public:
+	using vessel::vessel;
 	DD();
 	virtual ~DD();
 

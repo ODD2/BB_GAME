@@ -60,6 +60,9 @@
     <ClCompile Include="DD.cpp">
       <Filter>Source Files\Vessels</Filter>
     </ClCompile>
+    <ClCompile Include="battlefield.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainform.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="VESSELHEADER.h">
       <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="battlefield.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

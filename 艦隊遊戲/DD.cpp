@@ -17,7 +17,7 @@ DD::~DD()
 bool DD::defense(missile& missile_obj) {
 	if (!defCD) {
 		defCD = DD_DEFENSE_CD;
-		if (Distance_2D(this->Location, missile_obj.Location) < DD_DEFENSE_RANGE) {
+		if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < DD_DEFENSE_RANGE) {
 
 			return true;
 		}

@@ -16,7 +16,7 @@ CV::~CV()
 bool CV::defense(missile& missile_obj) {
 	if (!defCD) {
 		defCD = CV_DEFENSE_CD;
-		if (Distance_2D(this->Location, missile_obj.Location) < CV_DEFENSE_RANGE) {
+		if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < CV_DEFENSE_RANGE) {
 
 			return true;
 		}

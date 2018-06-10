@@ -11,10 +11,9 @@ missile::~missile()
 {
 }
 
-
 //Constructure without error detection on any variables;
 //Besure that these arguments are 100% correct;
-missile::missile(const _2D& Loc, const _2D& Des, const double& speed,const double& damage) {
+missile::missile(const _3D& Loc, const _3D& Des, const double& speed,const double& damage) {
 	this->speed = speed;
 	this->damage = damage;
 	Location = Loc;
@@ -28,14 +27,15 @@ bool missile::move() {
 	Location.x += r * cos(radial);
 	Location.y -= r * sin(radial);
 
-	if (OutOfRange_2D(Location)) {
+	if (OutOfRange_3D(Location)) {
 		return land();
 	}
 	else return true;
 }
 
 bool missile::land() {
-	if (Location == Destination) {
+	if (Location.to_2D() == Destination.to_2D()) {
+		Location.z = 0;
 		return true;
 	}
 	return false;

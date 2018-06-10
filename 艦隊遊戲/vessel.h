@@ -4,6 +4,7 @@
 #include <math.h>
 #include "GLOBALSETTINGS.h"
 #include "location_system.h"
+
 using namespace std;
 
 class missile;
@@ -13,6 +14,8 @@ class vessel
 	friend class MainForm;
 public:
 	vessel();
+	vessel(string);
+	vessel(string, const _2D&);
 	virtual ~vessel();
 
 	
@@ -36,5 +39,8 @@ protected:
 
 	//about HP
 	double HP = 0;
+
+	//about name
+	string name;
 };
 

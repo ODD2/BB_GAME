@@ -14,6 +14,7 @@ class BB :
 	public vessel
 {
 public:
+	using vessel::vessel;
 	BB();
 	virtual ~BB();
 
