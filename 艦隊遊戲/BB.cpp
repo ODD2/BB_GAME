@@ -4,8 +4,15 @@
 
 BB::BB()
 {
+	HP = BB_HP;
+	name = "unknown";
 }
 
+
+BB::BB(string  name) {
+	this->name = name;
+	HP = BB_HP;
+}
 
 BB::~BB()
 {

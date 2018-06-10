@@ -4,6 +4,7 @@
 
 CV::CV()
 {
+	HP = CV_HP;
 }
 
 
@@ -11,7 +12,10 @@ CV::~CV()
 {
 }
 
-
+CV::CV(string  name) {
+	this->name = name;
+	HP = CV_HP;
+}
 
 bool CV::defense(missile& missile_obj) {
 	if (!defCD) {

@@ -30,11 +30,10 @@ MainForm::MainForm(QWidget *parent)
 	connect(GameTimer, SIGNAL(timeout()), this, SLOT(Tick()));
 	GameTimer->setInterval(UPDATE_PER_MS);
 
-	test.move(-30, 18);
 }
 
 void MainForm::paintEvent(QPaintEvent *event) {
-	static double radar_angle = 0.0;
+
 
 
 //Initialize Canvas
@@ -59,21 +58,36 @@ void MainForm::paintEvent(QPaintEvent *event) {
 		//ground
 
 
-
-
 		//vessel
+			QPixmap pm_vessel("./Resources/BB.png");
+			pm_vessel = pm_vessel.scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+			
+			for (int i = 0; i < NUM_TEAM; i++) {
+				map<string, vessel*>::iterator it = BF.TEAM[i].begin();
+				for (; it != BF.TEAM[i].end();it++ ) {
+					QMatrix rm;
+					vessel& vs = *(it->second);
 
-			/*test*/
-			QPixmap pixmap("./Resources/B.png");
-			pixmap = pixmap.scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
-			QMatrix rm;
-			rm.rotate(-1*this->test.angle);
-			pixmap = pixmap.transformed(rm);
-			painter.drawPixmap(this->test.Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH/2, this->test.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT/2, pixmap);
-			/*test*/
-
+					rm.rotate(-1 * it->second->angle);
+					painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH / 2, 
+								       vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT / 2, 
+									   pm_vessel.transformed(rm));
+				}
+			}
 
 		//missle
+			QPixmap pm_missile("./Resources/MS.png");
+			pm_missile = pm_missile.scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+
+			for (int i = 0, limit = BF.MISSILE.size(); i < limit; i++) {
+					QMatrix rm;
+					missile * ms = BF.MISSILE[i];
+					rm.rotate(-1 * ms->angle);
+					painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH / 2,
+									   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT / 2, 
+						               pm_missile.transformed(rm));
+			}
+
 
 
 
@@ -108,18 +122,22 @@ void MainForm::paintEvent(QPaintEvent *event) {
 }
 
 void MainForm::Tick() {
+	//Object Tick Events
 	round += 1;
 	//map.tick();
-	test.tick();
-	if (round == (1000.0 / UPDATE_PER_MS)) {
-		round = 0;
-		//update GameTime
-		*GameTime = GameTime->addSecs(15);
-		qDebug() << GameTime->toString("hh:mm:ss");
-		ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
-		//map.render();
+	BF.Tick();
+
+
+	//update GameTime
+	*GameTime = GameTime->addMSecs(PER_SECOND_IN_GAME*UPDATE_PER_MS);
+	ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
+
+	//Battle Log Update
+	string TIME_MESSAGE = "[" + GameTime->toString("hh:mm:ss").toStdString() + "]";
+	while (BF.BattleLog_TEXT.size()) {
+		ui.TextBox_BattleLog->append(  (TIME_MESSAGE + BF.BattleLog_TEXT.back()).c_str() );
+		BF.BattleLog_TEXT.pop_back();
 	}
-	
 }
 
 void  MainForm::on_startButton_clicked() {

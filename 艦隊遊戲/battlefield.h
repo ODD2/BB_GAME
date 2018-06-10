@@ -2,45 +2,56 @@
 #include <vector>
 #include <map>
 #include "VESSELHEADER.h"
+#include "missile.h"
 #define NUM_TEAM 2
 
 using namespace std;
 
-class battlefield
+class BattleField
 {
 	friend class MainForm;
 public:
-	battlefield();
-	~battlefield();
+	BattleField();
+	~BattleField();
 
 	void Tick();
 
 
-//Create
-	//team , type , location
-	bool addVessel(int, string, const _2D&);
-//Modify
-	//origin vessel name, new vessel name.
-	bool tagVessel(string, string);
+	////Create
+	////team , type , name , location
+	//bool addVessel(int, string, string, const _2D&);
+	////Modify
+	////origin vessel name, new vessel name.
+	//bool tagVessel(string, string);
 
-//Manipulate
-	//vessel name , destination, speed
-	bool moveVessel(string, const _2D&, double);
+	////Manipulate
+	////vessel name, angle, speed
+	//bool moveVessel(string, double, double);
 
-	//vessel name, destination, missile type.
-	bool fireMissile(string,const _2D&,int=-1);
+	////vessel name, destination, missile type.
+	//bool fireMissile(string, const _2D&, int = -1);
 
-	//vessel name
-	bool defenseMissile(string);
+	////vessel name
+	//bool defenseMissile(string);
 
-	
+
 
 protected:
 
-	map<string,vessel*> TEAM[NUM_TEAM];
+	map<string, vessel*> TEAM[NUM_TEAM];
 	vector<missile*> MISSILE;
 	//vector<terrain*> TERRAIN;
 
-	string BattleLog_TEXT;
-};
+	inline void vesselTick();
+	inline void missileTick();
 
+
+	inline void missileLand();
+	inline void vesselDestroyed();
+	//inline void terrainBlock();
+
+
+	void Log(string title, string content);
+
+	vector<string> BattleLog_TEXT;
+};

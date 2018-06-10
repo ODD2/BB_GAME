@@ -53,7 +53,8 @@ inline bool operator==(_3D const & lhs, _3D const & rhs) {
 }
 
 inline bool OutOfRange_2D(_2D const & rhs) {
-	if (rhs.x < 0 ||rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS) {
+	if (rhs.x < -EPSILON ||rhs.x > MAP_INTERVALS + EPSILON ||
+		rhs.y < -EPSILON || rhs.y > MAP_INTERVALS + EPSILON) {
 		return true;
 	}
 	return false;
@@ -66,7 +67,11 @@ inline double Distance_2D(_2D const & lhs, _2D const & rhs) {
 }
 
 inline bool OutOfRange_3D(_3D const & rhs) {
-	if (rhs.x < 0 || rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS || rhs.z < -1*MAP_INTERVALS || rhs.z > MAP_INTERVALS) {
+	if (
+		rhs.x < -EPSILON || rhs.x > MAP_INTERVALS+EPSILON ||
+		rhs.y < -EPSILON || rhs.y > MAP_INTERVALS+EPSILON || 
+		rhs.z < -MAP_INTERVALS-EPSILON || rhs.z > MAP_INTERVALS+EPSILON
+		) {
 		return true;
 	}
 	return false;

@@ -4,6 +4,7 @@
 
 DD::DD()
 {
+	HP = DD_HP;
 }
 
 
@@ -11,7 +12,10 @@ DD::~DD()
 {
 }
 
-
+DD::DD(string  name) {
+	this->name = name;
+	HP = DD_HP;
+}
 
 
 bool DD::defense(missile& missile_obj) {

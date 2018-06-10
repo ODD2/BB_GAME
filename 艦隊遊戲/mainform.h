@@ -9,6 +9,7 @@
 #include "ui_mainform.h"
 #include "GLOBALSETTINGS.h"
 #include "VESSELHEADER.h"
+#include "battlefield.h"
 
 using namespace std;
 
@@ -24,8 +25,7 @@ private:
 	Ui::MainFormClass ui;
 	QTime * GameTime;
 	int round;
-	BB test = BB("test");
-
+	BattleField BF;
 protected:
 	void paintEvent(QPaintEvent *event) override;
 

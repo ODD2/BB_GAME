@@ -14,8 +14,8 @@ class BB :
 	public vessel
 {
 public:
-	using vessel::vessel;
 	BB();
+	BB(string);
 	virtual ~BB();
 
 	virtual bool defense(missile&);

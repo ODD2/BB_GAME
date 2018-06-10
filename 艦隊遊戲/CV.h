@@ -13,8 +13,8 @@ class CV :
 	public vessel
 {
 public:
-	using vessel::vessel;
 	CV();
+	CV(string);
 	virtual ~CV();
 
 	virtual bool defense(missile&);

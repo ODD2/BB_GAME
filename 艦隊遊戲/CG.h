@@ -13,8 +13,8 @@ class CG :
 	public vessel
 {
 public:
-	using vessel::vessel;
 	CG();
+	CG(string);
 	virtual ~CG();
 
 	virtual bool defense(missile&);
