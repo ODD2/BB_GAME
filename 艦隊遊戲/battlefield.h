@@ -6,28 +6,28 @@
 
 using namespace std;
 
-class battlefield
+class BattleField
 {
 	friend class MainForm;
 public:
-	battlefield();
-	~battlefield();
+	BattleField();
+	~BattleField();
 
 	void Tick();
 
 
 //Create
-	//team , type , location
-	bool addVessel(int, string, const _2D&);
+	//team , type , name , location
+	bool addVessel(int, string, string, const _2D&);
 //Modify
 	//origin vessel name, new vessel name.
 	bool tagVessel(string, string);
 
 //Manipulate
-	//vessel name , destination, speed
-	bool moveVessel(string, const _2D&, double);
+	//vessel name, angle, speed
+	bool moveVessel(string, double, double);
 
-	//vessel name, destination, missile type.
+	//vessel name, destination, missile type.//type no
 	bool fireMissile(string,const _2D&,int=-1);
 
 	//vessel name

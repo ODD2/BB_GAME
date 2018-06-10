@@ -2,11 +2,11 @@
 
 
 
-battlefield::battlefield()
+BattleField::BattleField()
 {
 }
 
 
-battlefield::~battlefield()
+BattleField::~BattleField()
 {
 }
