@@ -1,3 +1,4 @@
+#include <iostream>
 #include "battlefield.h"
 #include <time.h>
 #include  <random>
@@ -18,13 +19,13 @@ BattleField::BattleField()
 		TEAM[team][name]->move(rand()%360, rand()%20);
 	}
 	TEAM[0]["FAKE"] = new BB("FAKE");
-	MISSILE.push_back(new missile(_2D{ 20,20 }, _2D{ 1.06,1.06 }, 20, 5));
+	//MISSILE.push_back(new missile(_2D( 20,20 ), _2D( 1.06,1.06 ), 20, 5));
 
 
-	/*for (int i = 0; i < 100; i++) {
-		MISSILE.push_back(new missile(_2D{ 20,20 }, _2D{ fmod(rand(),21) , fmod(rand(),21)}, 20, 5));
+	for (int i = 0; i < 100; i++) {
+		MISSILE.push_back(new missile(_2D(20,20), _2D(fmod(rand(),21) , fmod(rand(),21)), 20, 5));
 		
-	}*/
+	}
 	
 }
 
@@ -33,10 +34,10 @@ BattleField::~BattleField()
 }
 
 void BattleField::Tick() {
-	vesselTick();
-	missileTick();
 	missileLand();
 	vesselDestroyed();
+	vesselTick();
+	missileTick();
 }
 
 inline void BattleField::vesselTick() {
@@ -77,7 +78,9 @@ inline void BattleField::missileLand() {
 				map<string, vessel*>::iterator it = TEAM[i].begin();
 				for (; it != TEAM[i].end(); it++) {
 					if ( it->second->HP > 0 && it->second->hit(*ms_pt) ) {
-						dmgVessels += it->second->name+",";
+						dmgVessels += it->second->name+
+							"["+to_string(it->second->Location.x)+","+to_string(it->second->Location.y)+"]"+
+							",";
 					}
 				}
 			}
@@ -95,7 +98,8 @@ inline void BattleField::missileLand() {
 			
 		
 			//Log Missile Attack
-			Log(ms_pt->name, "hits," + dmgVessels);
+			Log(ms_pt->name, "[" + to_string(ms_pt->Location.x) + "," + to_string(ms_pt->Location.y) + "]"
+							" hits," + dmgVessels);
 
 			//Removing Missile
 			delete ms_pt;

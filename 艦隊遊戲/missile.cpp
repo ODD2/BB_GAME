@@ -35,6 +35,7 @@ bool missile::tick() {
 
 bool missile::land() {
 	if (Location.to_2D() == Destination.to_2D()) {
+		Location = Destination;
 		Location.z = 0;
 		return true;
 	}
