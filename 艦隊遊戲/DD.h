@@ -15,6 +15,7 @@ class DD :
 public:
 	DD();
 	DD(string);
+	DD(string, const _2D&);
 	virtual ~DD();
 
 	virtual bool defense(missile&);

@@ -7,16 +7,19 @@ DD::DD()
 	HP = DD_HP;
 }
 
-
 DD::~DD()
 {
 }
 
-DD::DD(string  name) {
-	this->name = name;
+DD::DD(string  name):vessel(name)
+{
 	HP = DD_HP;
 }
 
+DD::DD(string name, const _2D& Location) : vessel(name, Location)
+{
+	HP = DD_HP;
+}
 
 bool DD::defense(missile& missile_obj) {
 	if (!defCD) {

@@ -15,7 +15,7 @@ MainForm::MainForm(QWidget *parent)
 
 
 	//Label_Map Setup
-	QImage Image_Map("./Resources/image.jpg");
+	QImage Image_Map("./Resources/image.png");
 	Image_Map = Image_Map.scaled(MAP_WIDTH, MAP_HEIGHT);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
 	ui.Label_Map->setPixmap(QPixmap::fromImage(Image_Map));
 		
@@ -42,7 +42,11 @@ void MainForm::paintEvent(QPaintEvent *event) {
 
 //Initialize Painter
 		QPainter painter(&Canvas_Battlefield);
-		painter.setPen(QColor("green"));	
+
+		QPen pt;
+		pt.setWidth(9);
+		pt.setBrush(QBrush("black"));
+		painter.setPen(pt);
 
 //Modifications to Canvas
 		/*
@@ -53,39 +57,57 @@ void MainForm::paintEvent(QPaintEvent *event) {
 		QColor test;
 		test.setHsl(h += 1, s, v);*/
 
-
+		
 
 		//ground
 
 
 		//vessel
-			QPixmap pm_vessel("./Resources/BB.png");
-			pm_vessel = pm_vessel.scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
-			
 			for (int i = 0; i < NUM_TEAM; i++) {
 				map<string, vessel*>::iterator it = BF.TEAM[i].begin();
 				for (; it != BF.TEAM[i].end();it++ ) {
+					//picture modification.
 					QMatrix rm;
 					vessel& vs = *(it->second);
-
 					rm.rotate(-1 * it->second->angle);
-					painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH / 2, 
-								       vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT / 2, 
-									   pm_vessel.transformed(rm));
+					QPixmap px_tmp = pm_vessel.transformed(rm);
+
+					//string modification.
+					string vessel_location = it->second->Location.operator std::string();
+
+					//draw missile
+					painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width()/ 2,
+						vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - (double)px_tmp.height()/ 2,
+						px_tmp);
+
+					//draw vessel
+					painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
+						vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + (double)px_tmp.height() / 2,
+						vessel_location.c_str());
 				}
 			}
 
 		//missle
-			QPixmap pm_missile("./Resources/MS.png");
-			pm_missile = pm_missile.scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
-
 			for (int i = 0, limit = BF.MISSILE.size(); i < limit; i++) {
+					//picture modification.
 					QMatrix rm;
 					missile * ms = BF.MISSILE[i];
 					rm.rotate(-1 * ms->angle);
-					painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - BATTLE_SHIP_WIDTH / 2,
-									   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - BATTLE_SHIP_HEIGHT / 2, 
+					QPixmap px_tmp = pm_missile.transformed(rm);
+
+					//string modification.
+					string missile_location = ms->Location.operator std::string();
+
+					//draw vessel
+					painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
+									   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - (double)px_tmp.height() / 2,
 						               pm_missile.transformed(rm));
+
+					//draw missile
+					painter.drawText(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
+									 ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) + (double)px_tmp.height() / 2,
+									 missile_location.c_str());
+
 			}
 
 
@@ -96,7 +118,8 @@ void MainForm::paintEvent(QPaintEvent *event) {
 
 
 		//Draw Line
-		painter.setPen(QColor(255,255,255,60));
+		//painter.setPen(QColor(255,255,255,60));
+		painter.setPen(QColor(0, 0, 0, 60));
 		double per_width = MAP_WIDTH / MAP_INTERVALS;
 		double per_height = MAP_HEIGHT / MAP_INTERVALS;
 		for (int i = 0; i < MAP_INTERVALS; i++) {

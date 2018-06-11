@@ -15,6 +15,7 @@ class CG :
 public:
 	CG();
 	CG(string);
+	CG(string, const _2D&);
 	virtual ~CG();
 
 	virtual bool defense(missile&);

@@ -8,6 +8,12 @@ struct _2D{
 	_2D(double x,double y) :x(x), y(y) {};
 	double x;
 	double y;
+
+	operator string() {
+		return "[" + to_string(x).substr(0,LOCATION_DISPLAY_WIDTH)+ "," + to_string(y).substr(0, LOCATION_DISPLAY_WIDTH) + "]";
+	}
+
+
 };
 
 struct _3D {
@@ -26,6 +32,10 @@ struct _3D {
 
 	inline _2D to_2D() {
 		return _2D(x,y);
+	}
+
+	operator string() {
+		return "[" + to_string(x).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(y).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(z).substr(0, LOCATION_DISPLAY_WIDTH) + "]";
 	}
 };
 

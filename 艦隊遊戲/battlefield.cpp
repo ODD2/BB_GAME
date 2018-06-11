@@ -11,22 +11,15 @@ BattleField::BattleField()
 	for (int i = 0; i < 10; i++) {
 		int team = rand() % 2;
 		string name = "TEST" + to_string(i);
-		vessel * create = new BB(name);
-		create->Location.x = rand() % 21;
-		create->Location.y = rand() % 21;
 			
-		TEAM[team][name] = create;
+		TEAM[team][name] = new BB(name, _2D(rand() % 21, rand() % 21));
 		TEAM[team][name]->move(rand()%360, rand()%20);
 	}
-	TEAM[0]["FAKE"] = new BB("FAKE");
-	//MISSILE.push_back(new missile(_2D( 20,20 ), _2D( 1.06,1.06 ), 20, 5));
 
-
-	for (int i = 0; i < 100; i++) {
-		MISSILE.push_back(new missile(_2D(20,20), _2D(fmod(rand(),21) , fmod(rand(),21)), 20, 5));
+	for (int i = 0; i <10; i++) {
+		MISSILE.push_back(new missile(_2D(20,20), _2D(fmod(rand(),21) , fmod(rand(),21)), 10, 1));
 		
 	}
-	
 }
 
 BattleField::~BattleField()

@@ -16,6 +16,7 @@ class BB :
 public:
 	BB();
 	BB(string);
+	BB(string, const _2D&);
 	virtual ~BB();
 
 	virtual bool defense(missile&);

@@ -21,7 +21,6 @@ public:
 	MainForm(QWidget *parent = Q_NULLPTR);
 	QTimer * GameTimer;
 private:
-	
 	Ui::MainFormClass ui;
 	QTime * GameTime;
 	int round;
@@ -34,5 +33,10 @@ private slots:
 	void on_stopButton_clicked();
 	void Tick();
 
+
+private:
+	//picures
+	QPixmap pm_vessel = QPixmap("./Resources/BB.png").scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	QPixmap pm_missile =  QPixmap("./Resources/MS.png").scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
 
 };

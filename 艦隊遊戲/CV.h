@@ -15,6 +15,7 @@ class CV :
 public:
 	CV();
 	CV(string);
+	CV(string, const _2D&);
 	virtual ~CV();
 
 	virtual bool defense(missile&);

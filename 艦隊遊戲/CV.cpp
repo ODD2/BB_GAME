@@ -7,13 +7,16 @@ CV::CV()
 	HP = CV_HP;
 }
 
-
 CV::~CV()
 {
 }
 
-CV::CV(string  name) {
-	this->name = name;
+CV::CV(string  name):vessel(name) {
+	HP = CV_HP;
+}
+
+CV::CV(string name, const _2D& Location) : vessel(name, Location)
+{
 	HP = CV_HP;
 }
 
