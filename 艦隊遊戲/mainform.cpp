@@ -2,7 +2,7 @@
 #include <QtDebug>
 #include <qpainter.h>
 #include <qmovie.h>
-
+#include <qbitmap.h>
 MainForm::MainForm(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -34,8 +34,6 @@ MainForm::MainForm(QWidget *parent)
 
 void MainForm::paintEvent(QPaintEvent *event) {
 
-
-
 //Initialize Canvas
 		QPixmap Canvas_Battlefield(MAP_WIDTH, MAP_HEIGHT);
 		Canvas_Battlefield.fill(QColor("transparent"));
@@ -43,11 +41,7 @@ void MainForm::paintEvent(QPaintEvent *event) {
 //Initialize Painter
 		QPainter painter(&Canvas_Battlefield);
 
-		QPen pt;
-		pt.setWidth(9);
-		pt.setBrush(QBrush("black"));
-		painter.setPen(pt);
-
+	
 //Modifications to Canvas
 		/*
 		static int h = 0;
@@ -57,105 +51,34 @@ void MainForm::paintEvent(QPaintEvent *event) {
 		QColor test;
 		test.setHsl(h += 1, s, v);*/
 
-		
-
 		//ground
 
 
 		//vessel
-			for (int i = 0; i < NUM_TEAM; i++) {
-				map<string, vessel*>::iterator it = BF.TEAM[i].begin();
-				for (; it != BF.TEAM[i].end();it++ ) {
-					//picture modification.
-					QMatrix rm;
-					vessel& vs = *(it->second);
-					rm.rotate(-1 * it->second->angle);
-					QPixmap px_tmp = pm_vessel.transformed(rm);
-
-					//string modification.
-					string vessel_location = it->second->Location.operator std::string();
-
-					//draw missile
-					painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width()/ 2,
-						vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - (double)px_tmp.height()/ 2,
-						px_tmp);
-
-					//draw vessel
-					painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
-						vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + (double)px_tmp.height() / 2,
-						vessel_location.c_str());
-				}
-			}
-
+		renderVessle(painter);
 		//missle
-			for (int i = 0, limit = BF.MISSILE.size(); i < limit; i++) {
-					//picture modification.
-					QMatrix rm;
-					missile * ms = BF.MISSILE[i];
-					rm.rotate(-1 * ms->angle);
-					QPixmap px_tmp = pm_missile.transformed(rm);
+		renderMissile(painter);
+		//effect
+		renderEffects(painter);
 
-					//string modification.
-					string missile_location = ms->Location.operator std::string();
+		//line
+		renderLine(painter);
+	
 
-					//draw vessel
-					painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
-									   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - (double)px_tmp.height() / 2,
-						               pm_missile.transformed(rm));
-
-					//draw missile
-					painter.drawText(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - (double)px_tmp.width() / 2,
-									 ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) + (double)px_tmp.height() / 2,
-									 missile_location.c_str());
-
-			}
-
-
-
-
-
-
-
-
-		//Draw Line
-		//painter.setPen(QColor(255,255,255,60));
-		painter.setPen(QColor(0, 0, 0, 60));
-		double per_width = MAP_WIDTH / MAP_INTERVALS;
-		double per_height = MAP_HEIGHT / MAP_INTERVALS;
-		for (int i = 0; i < MAP_INTERVALS; i++) {
-			painter.drawLine(
-				0,
-				i*per_height,
-				MAP_WIDTH,
-				i*per_height
-			);
-		}
-		for (int i = 0; i < MAP_INTERVALS; i++) {
-			painter.drawLine(
-				i*per_width,
-				0,
-				i*per_width,
-				MAP_HEIGHT
-			);
-		}
-
-
-//Render Canvas+
+//Render Canvas
 		ui.Label_Battlefield->setPixmap(Canvas_Battlefield);
 }
 
 void MainForm::Tick() {
-	//Object Tick Events
-	round += 1;
-	//map.tick();
+//BattleField TickEvent
 	BF.Tick();
 
 
-	//update GameTime
+//update GameTime
 	*GameTime = GameTime->addMSecs(PER_SECOND_IN_GAME*UPDATE_PER_MS);
 	ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
 
-	//Battle Log Update
+//Battle Log Update
 	string TIME_MESSAGE = "[" + GameTime->toString("hh:mm:ss").toStdString() + "]";
 	while (BF.BattleLog_TEXT.size()) {
 		ui.TextBox_BattleLog->append(  (TIME_MESSAGE + BF.BattleLog_TEXT.back()).c_str() );
@@ -185,4 +108,140 @@ void  MainForm::on_stopButton_clicked() {
 	GameTimer->stop();
 	ui.TextBox_CommandB->setEnabled(true);
 	ui.TextBox_CommandA->setEnabled(true);
+}
+
+inline void MainForm::renderVessle(QPainter& painter) {
+//Setup Pen for TEXT
+	QPen pen_text;
+	pen_text.setWidth(TEXT_PIXEL);
+	pen_text.setBrush(QBrush("black"));
+	QPen pen_saved = painter.pen();
+	painter.setPen(pen_text);
+
+//Object Render + Text Render
+	for (int i = 0; i < NUM_TEAM; i++) {
+		map<string, vessel*>::iterator it = BF.TEAM[i].begin();
+		for (; it != BF.TEAM[i].end(); it++) {
+			//picture modification.
+			QMatrix rm;
+			vessel& vs = *(it->second);
+			rm.rotate(-1 * it->second->angle);
+			QPixmap px_tmp = pm_vessel.transformed(rm);
+
+			//string modification.
+			string vessel_location = it->second->Location.operator std::string();
+
+
+			double width_deviation = (double)px_tmp.width() / 2;
+			double height_deviation = (double)px_tmp.height() / 2;
+
+
+			//write vessel name
+			painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+				it->second->name.c_str());
+
+
+			//draw vessel
+			painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+				px_tmp);
+
+
+			//write vessel location
+			painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
+				vessel_location.c_str());
+		}
+	}
+
+//Pen Resume
+	painter.setPen(pen_saved);
+}
+
+inline void MainForm::renderMissile(QPainter& painter) {
+//Setup Pen for TEXT
+	QPen pen_text;
+	pen_text.setWidth(TEXT_PIXEL);
+	pen_text.setBrush(QBrush("black"));
+	QPen pen_saved = painter.pen();
+	painter.setPen(pen_text);
+
+//Object Render + Text Render
+	for (int i = 0, limit = BF.MISSILE.size(); i < limit; i++) {
+		//picture modification.
+		QMatrix rm;
+		missile * ms = BF.MISSILE[i];
+		rm.rotate(-1 * ms->angle);
+		QPixmap px_tmp = pm_missile.transformed(rm);
+
+
+		//string modification.
+		string missile_location = ms->Location.to_2D().operator std::string();
+
+
+		double width_deviation = (double)px_tmp.width() / 2;
+		double height_deviation = (double)px_tmp.height() / 2;
+
+
+		//draw  missile
+		painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+						   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+						   px_tmp);
+
+		//write vessel location
+		painter.drawText(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
+			missile_location.c_str());
+
+	}
+
+//Pen Resume
+	painter.setPen(pen_saved);
+}
+
+inline void MainForm::renderEffects(QPainter& painter) {
+
+	for (int i = 0, j = BF.EXPLOSION.size(); i < j; i++) {
+	    explosion & exp_ref = *(BF.EXPLOSION[i]);
+		QPixmap cp_ex = pm_explode.scaled(exp_ref.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
+										  exp_ref.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS));
+	
+
+		double width_deviation = cp_ex.width() / 2.0;
+		double height_deviation = cp_ex.height() / 2.0;
+
+		painter.drawPixmap(exp_ref.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+					       exp_ref.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+						   cp_ex);
+	}
+
+}
+
+inline void MainForm::renderLine(QPainter& painter) {
+//Setup Pen for line
+	QPen  pen_saved = painter.pen();
+	painter.setPen(QColor(0, 0, 0, 60));
+	
+	double per_width = MAP_WIDTH / MAP_INTERVALS;
+	double per_height = MAP_HEIGHT / MAP_INTERVALS;
+	for (int i = 0; i < MAP_INTERVALS; i++) {
+		painter.drawLine(
+			0,
+			i*per_height,
+			MAP_WIDTH,
+			i*per_height
+		);
+	}
+	for (int i = 0; i < MAP_INTERVALS; i++) {
+		painter.drawLine(
+			i*per_width,
+			0,
+			i*per_width,
+			MAP_HEIGHT
+		);
+	}
+
+//Pen Resume
+	painter.setPen(pen_saved);
 }

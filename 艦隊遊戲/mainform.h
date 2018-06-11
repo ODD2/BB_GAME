@@ -21,10 +21,12 @@ public:
 	MainForm(QWidget *parent = Q_NULLPTR);
 	QTimer * GameTimer;
 private:
+//objects
 	Ui::MainFormClass ui;
 	QTime * GameTime;
-	int round;
 	BattleField BF;
+
+
 protected:
 	void paintEvent(QPaintEvent *event) override;
 
@@ -35,8 +37,15 @@ private slots:
 
 
 private:
-	//picures
+//picures
 	QPixmap pm_vessel = QPixmap("./Resources/BB.png").scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 	QPixmap pm_missile =  QPixmap("./Resources/MS.png").scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+	QPixmap pm_explode = QPixmap("./Resources/EX.png");
 
+//render functions
+	inline void renderVessle(QPainter&);
+	inline void renderMissile(QPainter&);
+	inline void renderEffects(QPainter&);
+	inline void renderLine(QPainter&);
+	//inline void renderTerrain();
 };

@@ -3,6 +3,7 @@
 #include <map>
 #include "VESSELHEADER.h"
 #include "missile.h"
+#include "Explosion.h"
 #define NUM_TEAM 2
 
 using namespace std;
@@ -41,10 +42,11 @@ protected:
 	map<string, vessel*> TEAM[NUM_TEAM];
 	vector<missile*> MISSILE;
 	//vector<terrain*> TERRAIN;
+	vector<explosion*> EXPLOSION;
 
 	inline void vesselTick();
 	inline void missileTick();
-
+	inline void explosionTick();
 
 	inline void missileLand();
 	inline void vesselDestroyed();

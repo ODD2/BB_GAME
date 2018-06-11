@@ -34,15 +34,24 @@
     <Filter Include="Source Files\Vessels">
       <UniqueIdentifier>{750b721b-978f-4231-a4c9-302f6948b266}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Missiles">
+      <UniqueIdentifier>{a63ce204-3c7d-4dfa-8d4e-a367d0a8430d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Missile">
+      <UniqueIdentifier>{e692979d-ade5-456e-afeb-a2dc717c1e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Effects">
+      <UniqueIdentifier>{0e4cc859-a455-440f-8f5f-cc872b96fc1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Effects">
+      <UniqueIdentifier>{75231879-6c0c-436e-8d63-8c65b5df345b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mainform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="missile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vessel.cpp">
@@ -62,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="battlefield.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>Source Files\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>Source Files\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,9 +101,6 @@
     <ClInclude Include="GLOBALSETTINGS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="missile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vessel.h">
       <Filter>Header Files\Vessels</Filter>
     </ClInclude>
@@ -109,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="battlefield.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>Header Files\Missiles</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>Header Files\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

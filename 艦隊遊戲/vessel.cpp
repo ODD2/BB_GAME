@@ -21,7 +21,7 @@ vessel::~vessel()
 
 bool vessel::hit(missile& missile_obj) {
 	double dis = Distance_2D(Location, missile_obj.Location.to_2D());
-	if (dis <= 1.5) {
+	if (dis <= missile_obj.damageRadius) {
 		HP -= missile_obj.damage;
 		return true;
 	}

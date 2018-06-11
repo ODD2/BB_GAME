@@ -16,8 +16,8 @@ BattleField::BattleField()
 		TEAM[team][name]->move(rand()%360, rand()%20);
 	}
 
-	for (int i = 0; i <10; i++) {
-		MISSILE.push_back(new missile(_2D(20,20), _2D(fmod(rand(),21) , fmod(rand(),21)), 10, 1));
+	for (int i = 0; i <100; i++) {
+		MISSILE.push_back(new missile(_2D(20,20), _2D(fmod(rand(),21) , fmod(rand(),21)), 30, 5));
 		
 	}
 }
@@ -27,6 +27,7 @@ BattleField::~BattleField()
 }
 
 void BattleField::Tick() {
+	explosionTick();
 	missileLand();
 	vesselDestroyed();
 	vesselTick();
@@ -57,20 +58,43 @@ inline void BattleField::missileTick() {
 	}
 }
 
+inline void BattleField::explosionTick() {
+	for (int i = 0; i < EXPLOSION.size(); i++) {
+		EXPLOSION[i]->tick();
+		if (EXPLOSION[i]->radius <= 0) {
+			delete EXPLOSION[i];
+			EXPLOSION.erase(EXPLOSION.begin() + i);
+			i--;
+		}
+	}
+}
+
 inline void BattleField::missileLand() {
 	//check every missile.
 	for (int i = 0; i < MISSILE.size(); i++) {
 		missile * ms_pt = MISSILE[i];
 
 		if (ms_pt->land()) {
-			string dmgVessels = "{";
 			
 
+			//BattleLog
+			string dmgVessels = "{";
+
+
+			//Create Explosion
+			EXPLOSION.push_back(new explosion(ms_pt->damageRadius, ms_pt->Location.to_2D()));
+
+	
 			//Check any vessel hits.
 			for (int i = 0; i < NUM_TEAM; i++) {
 				map<string, vessel*>::iterator it = TEAM[i].begin();
 				for (; it != TEAM[i].end(); it++) {
 					if ( it->second->HP > 0 && it->second->hit(*ms_pt) ) {
+
+					
+
+
+						//BattleLog 
 						dmgVessels += it->second->name+
 							"["+to_string(it->second->Location.x)+","+to_string(it->second->Location.y)+"]"+
 							",";
@@ -113,6 +137,10 @@ inline void BattleField::vesselDestroyed() {
 
 		for (; it != TEAM[i].end(); ) {
 			if ( it->second->HP <= 0) {
+				//Remeber to delete vessel Pointer
+				delete it->second;
+
+				//Erase MAP Object
 				auto it_destroy = it++;
 				TEAM[i].erase(it_destroy);
 			}

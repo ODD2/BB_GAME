@@ -42,6 +42,6 @@ bool missile::land() {
 	return false;
 }
 
-void missile::setAngle() {
+inline void missile::setAngle() {
 	angle = -1 * atan2(Destination.y - Location.y, Destination.x - Location.x)*180 / _PI_;
 }

@@ -4,7 +4,7 @@
 #include "location_system.h"
 #include "GLOBALSETTINGS.h"
 using namespace std;
-
+#define MISSILE_RADIUS 1.5
 class missile
 {
 	friend class vessel;
@@ -31,7 +31,7 @@ protected:
 	double angle = 0;
 	double speed = 0;
 	double damage = 0;
-
+	double damageRadius = MISSILE_RADIUS;
 	string name="";
 
 
