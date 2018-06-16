@@ -199,9 +199,23 @@
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="Label_debug">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>620</y>
+      <width>381</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>this</string>
+    </property>
+   </widget>
    <zorder>Label_Map</zorder>
    <zorder>Label_Battlefield</zorder>
    <zorder>layoutWidget</zorder>
+   <zorder>Label_debug</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

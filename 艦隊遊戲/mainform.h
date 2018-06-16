@@ -10,7 +10,7 @@
 #include "GLOBALSETTINGS.h"
 #include "VESSELHEADER.h"
 #include "battlefield.h"
-
+#define command_types 5  //五種功能 在analyze用到
 using namespace std;
 
 class MainForm : public QMainWindow
@@ -48,4 +48,5 @@ private:
 	inline void renderEffects(QPainter&);
 	inline void renderLine(QPainter&);
 	//inline void renderTerrain();
+	void analyze(string,int);//分析 command+team
 };

@@ -3,6 +3,9 @@
 #include <qpainter.h>
 #include <qmovie.h>
 #include <qbitmap.h>
+#include<strstream>
+#define Edebug
+
 MainForm::MainForm(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -12,8 +15,6 @@ MainForm::MainForm(QWidget *parent)
 	ui.Label_Battlefield->setStyleSheet("");
 	ui.Label_Map->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
 	ui.Label_Battlefield->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
-
-
 	//Label_Map Setup
 	QImage Image_Map("./Resources/image.png");
 	Image_Map = Image_Map.scaled(MAP_WIDTH, MAP_HEIGHT);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
@@ -73,7 +74,7 @@ void MainForm::Tick() {
 //BattleField TickEvent
 	BF.Tick();
 
-
+	
 //update GameTime
 	*GameTime = GameTime->addMSecs(PER_SECOND_IN_GAME*UPDATE_PER_MS);
 	ui.Label_GameTime->setText(GameTime->toString("hh:mm:ss"));
@@ -87,12 +88,15 @@ void MainForm::Tick() {
 }
 
 void  MainForm::on_startButton_clicked() {
-
+	
 	if (ui.TextBox_CommandA->toPlainText().length() != 0) {
 		qDebug() << "A have content:\n" << ui.TextBox_CommandA->toPlainText();
+		//分析
+		analyze(ui.TextBox_CommandA->toPlainText().toStdString(),0);
 	}
 	if (ui.TextBox_CommandB->toPlainText().length() != 0) {
 		qDebug() << "B have content:\n"<< ui.TextBox_CommandB->toPlainText();
+		analyze(ui.TextBox_CommandB->toPlainText().toStdString(), 1);
 	}
 
 	//Reset TextBox_Commands
@@ -244,4 +248,145 @@ inline void MainForm::renderLine(QPainter& painter) {
 
 //Pen Resume
 	painter.setPen(pen_saved);
+}
+
+//分析功能
+void MainForm::analyze(string command,int team) {
+	strstream in;
+	in << command;
+	string buffer;
+	string type[command_types] = { "SET","FIRE","DEFENSE","TAG","MOVE" };
+	while (getline(in,buffer))
+	{
+		int mod=-1,at=-1,at2=-1;
+		while (buffer[0] == ' ')buffer.erase(0, 1);
+		while (buffer[buffer.length()-1] == ' ')buffer.pop_back();
+		int white = buffer.find("  ");
+		while (white!=-1) {
+			buffer.erase(white, 1);
+			white = buffer.find("  ");
+		}
+		for (int i = 0; i < command_types; i++) {
+			at = buffer.find(type[i]);
+			if (at == 0) {
+				mod = i;
+				break;
+			}			
+		}
+		if (mod == 0) {
+			string vessel_name, vessel_type, twoDX, twoDY;
+			at = buffer.find(' ');
+			at2 = buffer.find(' ', at + 1);
+			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			at = buffer.find('(', at2 + 1);
+			vessel_type.assign(buffer.begin() + at2 + 1, buffer.begin() + at - 1);
+			at = buffer.find('(');
+			at2 = buffer.find(',');
+			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			at = buffer.find(')', at2 + 1);
+			twoDY.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
+			_2D loc{ stod(twoDX),stod(twoDY) };
+			string log = "Team";
+			log.push_back(team + 'A');
+			if (BF.addVessel(team, vessel_type, vessel_name, loc)) {
+				log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Success";
+			}
+			else {
+				log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Fail";
+			}
+			BF.BattleLog_TEXT.push_back(log);
+#ifdef Edebug
+			string x = "##" + vessel_name + "##" + vessel_type + "##" + twoDX + "##" + twoDY + "##";
+			ui.Label_debug->setText(QString::fromStdString(x));
+#endif // Edebug
+		}
+		else if (mod == 1) {
+			string vessel_name, twoDX, twoDY;
+			at = buffer.find(' ');
+			at2 = buffer.find(' ',at+1);
+			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			at = buffer.find('(', at2 + 1);
+			at2 = buffer.find(',',at+1);
+			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			at = buffer.find(')', at2 + 1);
+			twoDY.assign(buffer.begin() + at2+1, buffer.begin() + at);
+			_2D loc{ stod(twoDX),stod(twoDY) };
+			if (!BF.fireMissile(vessel_name, loc)) {
+				string log = "Team";
+				log.push_back(team + 'A');
+				log += " " + vessel_name + " Fire to (" + twoDX + "," + twoDY + ")-> Fail"  ;
+			}
+			
+#ifdef Edebug
+			string x = "##" + vessel_name + "##" + twoDX + "##"+twoDY+"##";
+			ui.Label_debug->setText(QString::fromStdString(x));
+
+#endif // Edebug
+		}
+		else if (mod == 2) {
+			string vessel_name,shellname;
+			at = buffer.find(' ');
+			at2 = buffer.find(' ', at + 1);
+			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			shellname.assign(buffer.begin() + at2 + 1, buffer.end());
+			if (BF.defenseMissile(vessel_name, shellname)) {
+				string log = vessel_name+" DEFENSE "+shellname+" -> Hit" ;
+				BF.BattleLog_TEXT.push_back(log);
+			}
+			else {
+				string log = vessel_name + " DEFENSE " + shellname + " -> Fail";
+				BF.BattleLog_TEXT.push_back(log);
+			}
+			
+#ifdef Edebug
+			string x = "##" + vessel_name + "##" + shellname + "##";
+			ui.Label_debug->setText(QString::fromStdString(x));
+#endif // Edebug
+		}
+		else if (mod == 3) {
+			string log = "Team";
+			log.push_back(team + 'A');
+			string vessel_name, newname;
+			at = buffer.find(' ');
+			at2 = buffer.find(' ', at + 1);
+			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			newname.assign(buffer.begin()+at2+1,buffer.end());
+			if (BF.tagVessel(vessel_name, newname)) {
+				log += " RENAME " + vessel_name + " to " + newname + " -> Success";
+			}
+			else {
+				log += " RENAME " + vessel_name + " to " + newname + " -> Fail";
+			}
+			BF.BattleLog_TEXT.push_back(log);
+#ifdef Edebug
+			string x = "##" + vessel_name + "##" + newname + "##" ;
+			ui.Label_debug->setText(QString::fromStdString(x));
+#endif // Edebug
+		}
+		else if (mod==4) {
+			string vessel_name,speed,angle;
+			at = buffer.find(' ');
+			at2 = buffer.find(' ', at + 1);
+			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
+			at = buffer.find(' ', at2 + 1);
+			speed.assign(buffer.begin()+at2+1, buffer.begin()+at);
+			angle.assign(buffer.begin()+at+1  , buffer.end());
+			string log = "Team";
+			log.push_back(team + 'A');
+			if (BF.moveVessel(vessel_name, stod(angle), stod(speed))) {
+				log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Success";	
+			}
+			else {
+				log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Fail";
+			}
+			BF.BattleLog_TEXT.push_back(log);
+#ifdef Edebug
+			string x = "##"+buffer+"##" + vessel_name + "##" + speed + "##"+angle+"##";
+			ui.Label_debug->setText(QString::fromStdString(x));
+#endif // Edebug
+		}
+		else {
+
+		}
+	}
 }
