@@ -6,6 +6,7 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+<<<<<<< HEAD
 static const unsigned char qt_resource_data[] = {
   // C:/Users/User/Documents/BB_GAME/????/Resources/image.jpg
   0x0,0x8,0x37,0x7f,
@@ -33696,6 +33697,8 @@ static const unsigned char qt_resource_struct[] = {
 
 };
 
+=======
+>>>>>>> STRUCTURE
 #ifdef QT_NAMESPACE
 #  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name
 #  define QT_RCC_MANGLE_NAMESPACE0(x) x
@@ -33712,10 +33715,6 @@ static const unsigned char qt_resource_struct[] = {
 namespace QT_NAMESPACE {
 #endif
 
-bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
-
-bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
-
 #ifdef QT_NAMESPACE
 }
 #endif
@@ -33723,16 +33722,12 @@ bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, 
 int QT_RCC_MANGLE_NAMESPACE(qInitResources_mainform)();
 int QT_RCC_MANGLE_NAMESPACE(qInitResources_mainform)()
 {
-    QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
-        (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 
 int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_mainform)();
 int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_mainform)()
 {
-    QT_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
-       (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 

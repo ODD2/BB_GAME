@@ -1,30 +1,42 @@
 #pragma once
 #include <stdlib.h>
 #include <math.h>
+#include <string>
 #include "GLOBALSETTINGS.h"
 using namespace std;
 
 struct _2D{
+	_2D(double x,double y) :x(x), y(y) {};
 	double x;
 	double y;
+
+	operator string() {
+		return "[" + to_string(x).substr(0,LOCATION_DISPLAY_WIDTH)+ "," + to_string(y).substr(0, LOCATION_DISPLAY_WIDTH) + "]";
+	}
+
+
 };
 
 struct _3D {
 
-	_3D() {};
+	_3D():x(0),y(0),z(0) {};
+	_3D(double x, double y, double z) :x(x), y(y), z(z) {}
 	_3D(const _2D& rhs) {
 		x = rhs.x;
 		y = rhs.y;
 		z = 0;
 	}
-	_3D(double x, double y, double z):x(x),y(y),z(z) {}
 
 	double x;
 	double y;
 	double z;
 
 	inline _2D to_2D() {
-		return { x,y };
+		return _2D(x,y);
+	}
+
+	operator string() {
+		return "[" + to_string(x).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(y).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(z).substr(0, LOCATION_DISPLAY_WIDTH) + "]";
 	}
 };
 
@@ -53,7 +65,8 @@ inline bool operator==(_3D const & lhs, _3D const & rhs) {
 }
 
 inline bool OutOfRange_2D(_2D const & rhs) {
-	if (rhs.x < 0 ||rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS) {
+	if (rhs.x < -EPSILON ||rhs.x > MAP_INTERVALS + EPSILON ||
+		rhs.y < -EPSILON || rhs.y > MAP_INTERVALS + EPSILON) {
 		return true;
 	}
 	return false;
@@ -61,12 +74,16 @@ inline bool OutOfRange_2D(_2D const & rhs) {
 
 inline double Distance_2D(_2D const & lhs, _2D const & rhs) {
 	double x = fabs(lhs.x - rhs.x);
-	double y = fabs(lhs.y - rhs.x);
+	double y = fabs(lhs.y - rhs.y);
 	return pow(x*x + y*y, 0.5);
 }
 
 inline bool OutOfRange_3D(_3D const & rhs) {
-	if (rhs.x < 0 || rhs.x > MAP_INTERVALS || rhs.y < 0 || rhs.y > MAP_INTERVALS || rhs.z < -1*MAP_INTERVALS || rhs.z > MAP_INTERVALS) {
+	if (
+		rhs.x < -EPSILON || rhs.x > MAP_INTERVALS+EPSILON ||
+		rhs.y < -EPSILON || rhs.y > MAP_INTERVALS+EPSILON || 
+		rhs.z < -MAP_INTERVALS-EPSILON || rhs.z > MAP_INTERVALS+EPSILON
+		) {
 		return true;
 	}
 	return false;
@@ -74,7 +91,7 @@ inline bool OutOfRange_3D(_3D const & rhs) {
 
 inline double Distance_3D(_3D const & lhs, _3D const & rhs) {
 	double x = fabs(lhs.x - rhs.x);
-	double y = fabs(lhs.y - rhs.x);
+	double y = fabs(lhs.y - rhs.y);
 	double z = fabs(lhs.z - rhs.z);
 	return pow(x*x + y*y + z*z, 0.5);
 }

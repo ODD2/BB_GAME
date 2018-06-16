@@ -20,9 +20,10 @@ vessel::~vessel()
 }
 
 bool vessel::hit(missile& missile_obj) {
-	if (Distance_2D(Location, missile_obj.Location.to_2D()) < 1.5) {
+	double dis = Distance_2D(Location, missile_obj.Location.to_2D());
+	if (dis <= missile_obj.damageRadius) {
 		HP -= missile_obj.damage;
-		return HP < 0;
+		return true;
 	}
 	return false;
 }
@@ -34,7 +35,7 @@ void vessel::tick() {
 		speed = 0;
 	}
 	else {
-		double r = speed / (1000.0 / UPDATE_PER_MS * 4 );
+		double r = speed / (60.0 / PER_SECOND_IN_GAME ) /(1000.0 / UPDATE_PER_MS  );
 		double radial = (angle/180*_PI_);
 		Location.x += r * cos(radial);
 		Location.y -= r * sin(radial);

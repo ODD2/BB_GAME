@@ -1,6 +1,10 @@
 <RCC>
   <qresource prefix="MainForm"/>
+<<<<<<< HEAD
   <qresource>
     <file>Resources/image.jpg</file>
   </qresource>
+=======
+  <qresource/>
+>>>>>>> STRUCTURE
 </RCC>

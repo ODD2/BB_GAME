@@ -12,6 +12,7 @@ class missile;
 class vessel
 {
 	friend class MainForm;
+	friend class BattleField;
 public:
 	vessel();
 	vessel(string);
@@ -34,8 +35,8 @@ protected:
 	double speed = 0;
 
 	//about cool downs
-	double atkCD=15;
-	double defCD=30;
+	double atkCD=0;
+	double defCD=0;
 
 	//about HP
 	double HP = 0;

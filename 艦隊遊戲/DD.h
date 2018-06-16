@@ -13,8 +13,9 @@ class DD :
 	public vessel
 {
 public:
-	using vessel::vessel;
 	DD();
+	DD(string);
+	DD(string, const _2D&);
 	virtual ~DD();
 
 	virtual bool defense(missile&);

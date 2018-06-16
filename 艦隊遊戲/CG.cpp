@@ -4,14 +4,22 @@
 
 CG::CG()
 {
+	HP = CG_HP;
 }
-
 
 CG::~CG()
 {
 }
 
+CG::CG(string  name) {
+	this->name = name;
+	HP = CG_HP;
+}
 
+CG::CG(string name, const _2D& Location) : vessel(name, Location)
+{
+	HP = CG_HP;
+}
 
 bool CG::defense(missile& missile_obj) {
 	if (!defCD) {

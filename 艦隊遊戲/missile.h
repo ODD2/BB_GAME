@@ -1,8 +1,10 @@
 #pragma once
 #include <math.h>
+#include <string>
 #include "location_system.h"
 #include "GLOBALSETTINGS.h"
-
+using namespace std;
+#define MISSILE_RADIUS 1.5
 class missile
 {
 	friend class vessel;
@@ -11,7 +13,7 @@ class missile
 	friend class CV;
 	friend class DD;
 	friend class MainForm;
-
+	friend class BattleField;
 
 
 public:
@@ -20,7 +22,7 @@ public:
 	//Location, Destination, Speed, Damage
 	missile(const _3D&, const _3D&,const double&,const double&);
 	virtual ~missile();
-	virtual bool move();
+	virtual bool tick();
 	virtual bool land();
 
 protected:
@@ -29,6 +31,9 @@ protected:
 	double angle = 0;
 	double speed = 0;
 	double damage = 0;
+	double damageRadius = MISSILE_RADIUS;
+	string name="";
+
 
 	inline void setAngle();
 };

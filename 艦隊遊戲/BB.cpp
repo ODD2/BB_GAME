@@ -4,15 +4,22 @@
 
 BB::BB()
 {
+	HP = BB_HP;
+	name = "unknown";
 }
 
+BB::BB(string  name):vessel(name) {
+	HP = BB_HP;
+}
+
+BB::BB(string name, const _2D& Location) : vessel(name, Location)
+{
+	HP = BB_HP;
+}
 
 BB::~BB()
 {
 }
-
-
-
 
 bool BB::defense(missile& missile_obj) {
 	if (!defCD) {

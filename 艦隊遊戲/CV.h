@@ -13,8 +13,9 @@ class CV :
 	public vessel
 {
 public:
-	using vessel::vessel;
 	CV();
+	CV(string);
+	CV(string, const _2D&);
 	virtual ~CV();
 
 	virtual bool defense(missile&);

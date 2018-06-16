@@ -4,14 +4,21 @@
 
 CV::CV()
 {
+	HP = CV_HP;
 }
-
 
 CV::~CV()
 {
 }
 
+CV::CV(string  name):vessel(name) {
+	HP = CV_HP;
+}
 
+CV::CV(string name, const _2D& Location) : vessel(name, Location)
+{
+	HP = CV_HP;
+}
 
 bool CV::defense(missile& missile_obj) {
 	if (!defCD) {

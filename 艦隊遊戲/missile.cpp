@@ -18,29 +18,30 @@ missile::missile(const _3D& Loc, const _3D& Des, const double& speed,const doubl
 	this->damage = damage;
 	Location = Loc;
 	Destination = Des;
-	angle = atan2(Des.y - Loc.y, Des.x - Loc.x);
+	angle = -1 * atan2(Des.y - Loc.y, Des.x - Loc.x) * 180 / _PI_;
 }
 
-bool missile::move() {
-	double r = speed / (1000.0 / UPDATE_PER_MS * 4);
+bool missile::tick() {
+	double r = speed / (60.0 / PER_SECOND_IN_GAME) / (1000.0 / UPDATE_PER_MS);
 	double radial = angle/180 * _PI_;
 	Location.x += r * cos(radial);
 	Location.y -= r * sin(radial);
 
 	if (OutOfRange_3D(Location)) {
-		return land();
+		return false;
 	}
 	else return true;
 }
 
 bool missile::land() {
 	if (Location.to_2D() == Destination.to_2D()) {
+		Location = Destination;
 		Location.z = 0;
 		return true;
 	}
 	return false;
 }
 
-void missile::setAngle() {
-	angle = atan2(Destination.y - Location.y, Destination.x - Location.x);
+inline void missile::setAngle() {
+	angle = -1 * atan2(Destination.y - Location.y, Destination.x - Location.x)*180 / _PI_;
 }
