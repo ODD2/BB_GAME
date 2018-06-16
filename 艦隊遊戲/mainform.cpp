@@ -255,7 +255,7 @@ void MainForm::analyze(string command,int team) {
 	strstream in;
 	in << command;
 	string buffer;
-	string type[command_types] = { "SET","FIRE","DEFENSE","TAG","MOVE" };
+	string type[command_types] = { "SET","FIRE","DEFENSE","TAG","MOVE","ULT"};
 	while (getline(in,buffer))
 	{
 		int mod=-1,at=-1,at2=-1;
@@ -315,6 +315,7 @@ void MainForm::analyze(string command,int team) {
 				string log = "Team";
 				log.push_back(team + 'A');
 				log += " " + vessel_name + " Fire to (" + twoDX + "," + twoDY + ")-> Fail"  ;
+				BF.BattleLog_TEXT.push_back(log);
 			}
 			
 #ifdef Edebug
@@ -381,7 +382,7 @@ void MainForm::analyze(string command,int team) {
 			}
 			BF.BattleLog_TEXT.push_back(log);
 #ifdef Edebug
-			string x = "##"+buffer+"##" + vessel_name + "##" + speed + "##"+angle+"##";
+			string x = "##" + vessel_name + "##" + speed + "##"+angle+"##";
 			ui.Label_debug->setText(QString::fromStdString(x));
 #endif // Edebug
 		}

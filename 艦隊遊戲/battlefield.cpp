@@ -211,9 +211,8 @@ bool BattleField::moveVessel(string Name, double Angle, double Speed) {
 	for (int i = 0; i < NUM_TEAM; i++) {
 		map<string, vessel*>::iterator it = TEAM[i].find(Name);
 		if (it != TEAM[i].end()) {
-			it->second->angle = Angle;
-			it->second->speed = Speed;
-			return true;
+			if (!it->second->move(Angle, Speed))return false;
+			else return true;
 		}
 	}
 	return false;
