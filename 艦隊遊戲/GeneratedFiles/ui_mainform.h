@@ -48,6 +48,7 @@ public:
     QTextEdit *TextBox_BattleLog;
     QLabel *Label_Map;
     QLabel *Label_Battlefield;
+    QLabel *Label_debug;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -167,10 +168,14 @@ public:
         Label_Battlefield->setObjectName(QStringLiteral("Label_Battlefield"));
         Label_Battlefield->setGeometry(QRect(20, 40, 570, 570));
         Label_Battlefield->setStyleSheet(QStringLiteral("QLabel{background-color: green}"));
+        Label_debug = new QLabel(centralWidget);
+        Label_debug->setObjectName(QStringLiteral("Label_debug"));
+        Label_debug->setGeometry(QRect(30, 620, 381, 41));
         MainFormClass->setCentralWidget(centralWidget);
         Label_Map->raise();
         Label_Battlefield->raise();
         layoutWidget->raise();
+        Label_debug->raise();
         menuBar = new QMenuBar(MainFormClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1298, 21));
@@ -198,6 +203,7 @@ public:
         Label_BattleLog->setText(QApplication::translate("MainFormClass", "BattleLog:", nullptr));
         Label_Map->setText(QString());
         Label_Battlefield->setText(QString());
+        Label_debug->setText(QApplication::translate("MainFormClass", "this", nullptr));
     } // retranslateUi
 
 };

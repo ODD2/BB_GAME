@@ -81,10 +81,10 @@ void MainForm::Tick() {
 
 //Battle Log Update
 	string TIME_MESSAGE = "[" + GameTime->toString("hh:mm:ss").toStdString() + "]";
-	while (BF.BattleLog_TEXT.size()) {
-		ui.TextBox_BattleLog->append(  (TIME_MESSAGE + BF.BattleLog_TEXT.back()).c_str() );
-		BF.BattleLog_TEXT.pop_back();
+	for (int i = 0, j = BF.BattleLog_TEXT.size(); i < j; i++) {
+		ui.TextBox_BattleLog->append((TIME_MESSAGE + BF.BattleLog_TEXT[i]).c_str());
 	}
+	BF.BattleLog_TEXT.clear();
 }
 
 void  MainForm::on_startButton_clicked() {
