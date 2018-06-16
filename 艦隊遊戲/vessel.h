@@ -27,7 +27,6 @@ public:
 	
 	virtual void tick();
 
-
 protected:
 	//about position & movement
 	_2D Location = {0.1,0.1};

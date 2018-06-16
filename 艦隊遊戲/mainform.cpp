@@ -4,7 +4,7 @@
 #include <qmovie.h>
 #include <qbitmap.h>
 #include<strstream>
-#define Edebug
+
 
 MainForm::MainForm(QWidget *parent)
 	: QMainWindow(parent)
@@ -30,6 +30,7 @@ MainForm::MainForm(QWidget *parent)
 	GameTimer = new QTimer(this);
 	connect(GameTimer, SIGNAL(timeout()), this, SLOT(Tick()));
 	GameTimer->setInterval(UPDATE_PER_MS);
+	
 
 }
 
@@ -88,7 +89,7 @@ void MainForm::Tick() {
 }
 
 void  MainForm::on_startButton_clicked() {
-	
+	ui.Label_debug->setText("");
 	if (ui.TextBox_CommandA->toPlainText().length() != 0) {
 		qDebug() << "A have content:\n" << ui.TextBox_CommandA->toPlainText();
 		//¤ÀªR
@@ -277,13 +278,17 @@ void MainForm::analyze(string command,int team) {
 			string vessel_name, vessel_type, twoDX, twoDY;
 			at = buffer.find(' ');
 			at2 = buffer.find(' ', at + 1);
+			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			at = buffer.find('(', at2 + 1);
+			if (!checkText(at, at2))break;
 			vessel_type.assign(buffer.begin() + at2 + 1, buffer.begin() + at - 1);
 			at = buffer.find('(');
 			at2 = buffer.find(',');
+			if (!checkText(at, at2))break;
 			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			at = buffer.find(')', at2 + 1);
+			if (!checkText(at, at2))break;
 			twoDY.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
 			_2D loc{ stod(twoDX),stod(twoDY) };
 			string log = "Team";
@@ -304,14 +309,17 @@ void MainForm::analyze(string command,int team) {
 			string vessel_name, twoDX, twoDY;
 			at = buffer.find(' ');
 			at2 = buffer.find(' ',at+1);
+			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			at = buffer.find('(', at2 + 1);
 			at2 = buffer.find(',',at+1);
+			if (!checkText(at, at2))break;
 			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			at = buffer.find(')', at2 + 1);
+			if (!checkText(at, at2))break;
 			twoDY.assign(buffer.begin() + at2+1, buffer.begin() + at);
 			_2D loc{ stod(twoDX),stod(twoDY) };
-			if (!BF.fireMissile(vessel_name, loc)) {
+			if (!BF.fireMissile(vessel_name, loc,team)) {
 				string log = "Team";
 				log.push_back(team + 'A');
 				log += " " + vessel_name + " Fire to (" + twoDX + "," + twoDY + ")-> Fail"  ;
@@ -328,6 +336,7 @@ void MainForm::analyze(string command,int team) {
 			string vessel_name,shellname;
 			at = buffer.find(' ');
 			at2 = buffer.find(' ', at + 1);
+			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			shellname.assign(buffer.begin() + at2 + 1, buffer.end());
 			if (BF.defenseMissile(vessel_name, shellname)) {
@@ -350,6 +359,7 @@ void MainForm::analyze(string command,int team) {
 			string vessel_name, newname;
 			at = buffer.find(' ');
 			at2 = buffer.find(' ', at + 1);
+			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			newname.assign(buffer.begin()+at2+1,buffer.end());
 			if (BF.tagVessel(vessel_name, newname)) {
@@ -368,8 +378,10 @@ void MainForm::analyze(string command,int team) {
 			string vessel_name,speed,angle;
 			at = buffer.find(' ');
 			at2 = buffer.find(' ', at + 1);
+			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			at = buffer.find(' ', at2 + 1);
+			if (!checkText(at, at2))break;
 			speed.assign(buffer.begin()+at2+1, buffer.begin()+at);
 			angle.assign(buffer.begin()+at+1  , buffer.end());
 			string log = "Team";
@@ -386,8 +398,30 @@ void MainForm::analyze(string command,int team) {
 			ui.Label_debug->setText(QString::fromStdString(x));
 #endif // Edebug
 		}
-		else {
+		else if (mod == 5) {
+			at = buffer.find(' ');
+			if (!checkText(at,0))break;
+			string V_name;
+			V_name.assign(buffer.begin()+at+1,buffer.end());
+			BF.ULT(V_name,team);
+			string log = V_name + " use ULT";
+			BF.BattleLog_TEXT.push_back(log);
+		}else{
 
+#ifdef Edebug
+			string x = "COMMAND FAIL";
+			ui.Label_debug->setText(QString::fromStdString(x));
+#endif // Edebug
 		}
 	}
+}
+
+bool MainForm::checkText(int at,int at2) {
+	if (at==-1) {
+		return false;
+	}
+	else if (at2==-1) {
+		return false;
+	}
+	return true;
 }

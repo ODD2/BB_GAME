@@ -170,7 +170,13 @@ public:
         Label_Battlefield->setStyleSheet(QStringLiteral("QLabel{background-color: green}"));
         Label_debug = new QLabel(centralWidget);
         Label_debug->setObjectName(QStringLiteral("Label_debug"));
-        Label_debug->setGeometry(QRect(30, 620, 381, 41));
+        Label_debug->setGeometry(QRect(90, 620, 381, 41));
+        QFont font;
+        font.setFamily(QStringLiteral("18thCentury"));
+        font.setPointSize(28);
+        Label_debug->setFont(font);
+        Label_debug->setTextFormat(Qt::RichText);
+        Label_debug->setAlignment(Qt::AlignCenter);
         MainFormClass->setCentralWidget(centralWidget);
         Label_Map->raise();
         Label_Battlefield->raise();
@@ -203,7 +209,7 @@ public:
         Label_BattleLog->setText(QApplication::translate("MainFormClass", "BattleLog:", nullptr));
         Label_Map->setText(QString());
         Label_Battlefield->setText(QString());
-        Label_debug->setText(QApplication::translate("MainFormClass", "this", nullptr));
+        Label_debug->setText(QString());
     } // retranslateUi
 
 };

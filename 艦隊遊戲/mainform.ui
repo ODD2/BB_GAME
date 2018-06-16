@@ -202,14 +202,26 @@
    <widget class="QLabel" name="Label_debug">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>90</x>
       <y>620</y>
       <width>381</width>
       <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>18thCentury</family>
+      <pointsize>28</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>this</string>
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::RichText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <zorder>Label_Map</zorder>
