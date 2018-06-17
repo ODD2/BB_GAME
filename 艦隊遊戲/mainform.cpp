@@ -12,7 +12,7 @@ MainForm::MainForm(QWidget *parent)
 	//UI Setup
 	ui.setupUi(this);
 	setFixedSize(geometry().width(), geometry().height());
-	ui.Label_Battlefield->setStyleSheet("");
+	ui.Label_Battlefield->setStyleSheet("border: 1px solid black");
 	ui.Label_Map->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
 	ui.Label_Battlefield->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
 	//Label_Map Setup
@@ -247,7 +247,7 @@ inline void MainForm::renderLine(QPainter& painter) {
 	
 	double per_width = MAP_WIDTH / MAP_INTERVALS;
 	double per_height = MAP_HEIGHT / MAP_INTERVALS;
-	for (int i = 0; i < MAP_INTERVALS; i++) {
+	for (int i = 1; i < MAP_INTERVALS; i++) {
 		painter.drawLine(
 			0,
 			i*per_height,
@@ -255,7 +255,7 @@ inline void MainForm::renderLine(QPainter& painter) {
 			i*per_height
 		);
 	}
-	for (int i = 0; i < MAP_INTERVALS; i++) {
+	for (int i = 1; i < MAP_INTERVALS; i++) {
 		painter.drawLine(
 			i*per_width,
 			0,
@@ -268,21 +268,13 @@ inline void MainForm::renderLine(QPainter& painter) {
 	painter.setPen(pen_saved);
 }
 
-<<<<<<< HEAD
-inline void MainForm::createPics() {
 
-	//remember to set pic size
-	ARRAY_PICS[PICS::PIC_NON] = new QPixmap("./Resources/NON.png");
-	ARRAY_PICS[PICS::PIC_BB] = new QPixmap("./Resources/BB.png"); *(ARRAY_PICS[PICS::PIC_BB]) = ARRAY_PICS[PICS::PIC_BB]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
-	ARRAY_PICS[PICS::PIC_MS] = new QPixmap("./Resources/MS.png"); *(ARRAY_PICS[PICS::PIC_MS]) = ARRAY_PICS[PICS::PIC_MS]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
-	ARRAY_PICS[PICS::PIC_EX] = new QPixmap("./Resources/EX.png");
-=======
 //д└кRе\пр
 void MainForm::analyze(string command,int team) {
 	strstream in;
 	in << command;
 	string buffer;
-	string type[command_types] = { "SET","FIRE","DEFENSE","TAG","MOVE","ULT"};
+	string type[COMMAND_TYPES] = { "SET","FIRE","DEFENSE","TAG","MOVE","ULT"};
 	while (getline(in,buffer))
 	{
 		int mod=-1,at=-1,at2=-1;
@@ -293,7 +285,7 @@ void MainForm::analyze(string command,int team) {
 			buffer.erase(white, 1);
 			white = buffer.find("  ");
 		}
-		for (int i = 0; i < command_types; i++) {
+		for (int i = 0; i < COMMAND_TYPES; i++) {
 			at = buffer.find(type[i]);
 			if (at == 0) {
 				mod = i;
@@ -316,7 +308,11 @@ void MainForm::analyze(string command,int team) {
 			at = buffer.find(')', at2 + 1);
 			if (!checkText(at, at2))break;
 			twoDY.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
-			_2D loc{ stod(twoDX),stod(twoDY) };
+			double x = stod(twoDX);
+			if (x == 20.0)x = 19.9; else if (x == 0.0) x = 0.1;
+			double y=stod(twoDY);
+			if (y == 20.0)y = 19.9; else if (y == 0.0) y = 0.1;
+			_2D loc{x,y};
 			string log = "Team";
 			log.push_back(team + 'A');
 			if (BF.addVessel(team, vessel_type, vessel_name, loc)) {
@@ -345,7 +341,7 @@ void MainForm::analyze(string command,int team) {
 			if (!checkText(at, at2))break;
 			twoDY.assign(buffer.begin() + at2+1, buffer.begin() + at);
 			_2D loc{ stod(twoDX),stod(twoDY) };
-			if (!BF.fireMissile(vessel_name, loc,team)) {
+			if (!BF.fireMissile(team,vessel_name, loc,team)) {
 				string log = "Team";
 				log.push_back(team + 'A');
 				log += " " + vessel_name + " Fire to (" + twoDX + "," + twoDY + ")-> Fail"  ;
@@ -365,7 +361,7 @@ void MainForm::analyze(string command,int team) {
 			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			shellname.assign(buffer.begin() + at2 + 1, buffer.end());
-			if (BF.defenseMissile(vessel_name, shellname)) {
+			if (BF.defenseMissile(team,vessel_name, shellname)) {
 				string log = vessel_name+" DEFENSE "+shellname+" -> Hit" ;
 				BF.BattleLog_TEXT.push_back(log);
 			}
@@ -388,7 +384,7 @@ void MainForm::analyze(string command,int team) {
 			if (!checkText(at, at2))break;
 			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
 			newname.assign(buffer.begin()+at2+1,buffer.end());
-			if (BF.tagVessel(vessel_name, newname)) {
+			if (BF.tagVessel(team,vessel_name, newname)) {
 				log += " RENAME " + vessel_name + " to " + newname + " -> Success";
 			}
 			else {
@@ -412,7 +408,7 @@ void MainForm::analyze(string command,int team) {
 			angle.assign(buffer.begin()+at+1  , buffer.end());
 			string log = "Team";
 			log.push_back(team + 'A');
-			if (BF.moveVessel(vessel_name, stod(angle), stod(speed))) {
+			if (BF.moveVessel(team,vessel_name, stod(angle), stod(speed))) {
 				log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Success";	
 			}
 			else {
@@ -429,7 +425,7 @@ void MainForm::analyze(string command,int team) {
 			if (!checkText(at,0))break;
 			string V_name;
 			V_name.assign(buffer.begin()+at+1,buffer.end());
-			BF.ULT(V_name,team);
+			BF.ULT(team,V_name);
 			string log = V_name + " use ULT";
 			BF.BattleLog_TEXT.push_back(log);
 		}else{
@@ -442,13 +438,24 @@ void MainForm::analyze(string command,int team) {
 	}
 }
 
-bool MainForm::checkText(int at,int at2) {
-	if (at==-1) {
+bool MainForm::checkText(int at, int at2) {
+	if (at == -1) {
 		return false;
 	}
-	else if (at2==-1) {
+	else if (at2 == -1) {
 		return false;
 	}
 	return true;
->>>>>>> ERICE
+}
+
+inline void MainForm::createPics() {
+
+	//remember to set pic size
+	ARRAY_PICS[PICS::PIC_NON] = new QPixmap("./Resources/NON.png");
+	ARRAY_PICS[PICS::PIC_BB] = new QPixmap("./Resources/BB.png"); *(ARRAY_PICS[PICS::PIC_BB]) = ARRAY_PICS[PICS::PIC_BB]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	ARRAY_PICS[PICS::PIC_CV] = new QPixmap("./Resources/CV.png"); *(ARRAY_PICS[PICS::PIC_CV]) = ARRAY_PICS[PICS::PIC_CV]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	ARRAY_PICS[PICS::PIC_DD] = new QPixmap("./Resources/DD.png"); *(ARRAY_PICS[PICS::PIC_DD]) = ARRAY_PICS[PICS::PIC_DD]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	ARRAY_PICS[PICS::PIC_CG] = new QPixmap("./Resources/CG.png"); *(ARRAY_PICS[PICS::PIC_CG]) = ARRAY_PICS[PICS::PIC_CG]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	ARRAY_PICS[PICS::PIC_MS] = new QPixmap("./Resources/MS.png"); *(ARRAY_PICS[PICS::PIC_MS]) = ARRAY_PICS[PICS::PIC_MS]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+	ARRAY_PICS[PICS::PIC_EX] = new QPixmap("./Resources/EX.png");
 }

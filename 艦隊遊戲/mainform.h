@@ -10,12 +10,10 @@
 #include "VESSELHEADER.h"
 #include "ui_mainform.h"
 #include "battlefield.h"
-<<<<<<< HEAD
 #include "ResourceClass.h"
+#define COMMAND_TYPES 6  //6種功能 在analyze用到
 
-=======
-#define command_types 6  //6種功能 在analyze用到
->>>>>>> ERICE
+
 using namespace std;
 
 class MainForm : public QMainWindow
@@ -44,7 +42,7 @@ private slots:
 private:
 //picures
 	QPixmap * ARRAY_PICS[PICS::PIC_END];
-	
+	inline void createPics();
 //render functions
 	inline void renderVessle(QPainter&);
 	inline void renderMissile(QPainter&);
@@ -52,11 +50,9 @@ private:
 	inline void renderLine(QPainter&);
 	//inline void renderTerrain();
 
-<<<<<<< HEAD
-	inline void createPics();
-=======
+	
+
 //功能
 	void analyze(string,int);//分析 command+team
 	bool MainForm::checkText(int , int );
->>>>>>> ERICE
 };

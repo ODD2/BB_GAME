@@ -32,7 +32,7 @@ void vessel::tick() {
 	//move tick
 	if (!speed);
 	else if (Location.x >= MAP_INTERVALS || Location.y >= MAP_INTERVALS || Location.x <= 0 || Location.y <= 0) {
-		speed = 0;
+		//speed = 0;
 	}
 	else {
 		double r = speed / (60.0 / PER_SECOND_IN_GAME ) /(1000.0 / UPDATE_PER_MS  );

@@ -20,24 +20,25 @@ public:
 
 
 	//Create
-	//team , type , name , location
+	//team, type , name , location
 	bool addVessel(int, string, string, const _2D&);
+
 	//Modify
-	//origin vessel name, new vessel name.
-	bool tagVessel(string, string);
+	//team, vessel name, new vessel name.
+	bool tagVessel(int, string, string);
 
 	//Manipulate
-	//vessel name, angle, speed
-	bool moveVessel(string, double, double);
+	//tesm, vessel name, angle, speed
+	bool moveVessel(int, string, double, double);
 
-	//vessel name, destination, . team   missile type
-	bool fireMissile(string, _2D&, int, int = -1);
+	//team, vessel name, destination,  missile type
+	bool fireMissile(int,  string, _2D&, int = -1);
 
-	//vessel name shell name
-	bool defenseMissile(string,string);
+	//team, vessel name shell name
+	bool defenseMissile(int, string, string);
 
 	//ult vessel_name  team
-	void ULT(string,int);
+	void ULT(int,string);
 
 protected:
 
@@ -46,13 +47,11 @@ protected:
 	vector<terrain*> TERRAIN;
 	vector<explosion*> EFFECT;
 
-<<<<<<< HEAD
+
 	//Ticks
-=======
 	//發射過的飛彈數量
 	int Num_shot[NUM_TEAM] = { 0 };
 
->>>>>>> ERICE
 	inline void vesselTick();
 	inline void missileTick();
 	inline void explosionTick();

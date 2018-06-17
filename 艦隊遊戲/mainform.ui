@@ -192,6 +192,9 @@
       <height>570</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">QLabel{background-color: green}</string>
     </property>
@@ -199,35 +202,9 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="Label_debug">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>620</y>
-      <width>381</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>18thCentury</family>
-      <pointsize>28</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="textFormat">
-     <enum>Qt::RichText</enum>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <zorder>Label_Map</zorder>
    <zorder>Label_Battlefield</zorder>
    <zorder>layoutWidget</zorder>
-   <zorder>Label_debug</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

@@ -248,9 +248,9 @@ bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc)
 	}
 	return true;
 }
-bool BattleField::tagVessel(string Pname, string Nname) {
+bool BattleField::tagVessel(int team,string Pname, string Nname) {
 
-	for (int i = 0; i < NUM_TEAM;i++) {
+	int i = team;
 		map<string, vessel*>::iterator it = TEAM[i].find(Pname);
 		map<string, vessel*>::iterator itnew = TEAM[i].find(Nname);
 		if (  it!=TEAM[i].end()   &&  itnew==TEAM[i].end()) {
@@ -262,29 +262,29 @@ bool BattleField::tagVessel(string Pname, string Nname) {
 			TEAM[i].erase(it);
 			return true;
 		}
-	}
+	
 	return false;
 }
 
 //vessel name, angle, speed
-bool BattleField::moveVessel(string Name, double Angle, double Speed) {
-	for (int i = 0; i < NUM_TEAM; i++) {
-		map<string, vessel*>::iterator it = TEAM[i].find(Name);
-		if (it != TEAM[i].end()) {
+bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
+	
+		map<string, vessel*>::iterator it = TEAM[team].find(Name);
+		if (it != TEAM[team].end()) {
 			if (!it->second->move(Angle, Speed))return false;
 			else return true;
 		}
-	}
+	
 	return false;
 }
-bool BattleField::defenseMissile(string Name,string shellNmae) {
-	for (int i = 0; i < NUM_TEAM; i++){
-		map<string, vessel*>::iterator it = TEAM[i].find(Name);
-		if (it != TEAM[i].end()) {
+bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
+	
+		map<string, vessel*>::iterator it = TEAM[team].find(Name);
+		if (it != TEAM[team].end()) {
 			int mplace = 0;
 			for (auto &X:MISSILE) {
 				if (X->name == shellNmae && it->second->defense(*X) ) {
-
+					delete X;
 					MISSILE.erase(MISSILE.begin()+ mplace);
 					return true;
 				}
@@ -292,10 +292,10 @@ bool BattleField::defenseMissile(string Name,string shellNmae) {
 			}
 			
 		}
-	}
+	
 	return false;
 }
-bool BattleField::fireMissile(string Name,  _2D&loc ,int team, int type) {
+bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
 	
 	for (auto T : TEAM[team]) {
@@ -320,7 +320,7 @@ bool BattleField::fireMissile(string Name,  _2D&loc ,int team, int type) {
 	return false;
 }
 
-void BattleField::ULT(string V_name,int team) {
+void BattleField::ULT( int team,string V_name) {
 
 
 	//Location, Destination, Speed, Damage

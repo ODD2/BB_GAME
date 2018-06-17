@@ -1,7 +1,7 @@
 #pragma once
 #include "vessel.h"
 //#define BB_MAX_SPEED 1
-#define BB_MAX_SPEED 20
+#define BB_MAX_SPEED 1
 #define BB_MISSILE_SPEED 2
 #define BB_MISSILE_DAMAGE 3
 #define BB_DEFENSE_RANGE 10
