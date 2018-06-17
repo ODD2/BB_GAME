@@ -38,6 +38,7 @@ struct _3D {
 	operator string() {
 		return "[" + to_string(x).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(y).substr(0, LOCATION_DISPLAY_WIDTH) + "," + to_string(z).substr(0, LOCATION_DISPLAY_WIDTH) + "]";
 	}
+
 };
 
 

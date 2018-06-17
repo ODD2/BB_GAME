@@ -121,6 +121,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainform.cpp" />
     <ClCompile Include="missile.cpp" />
+    <ClCompile Include="ResourceClass.cpp" />
+    <ClCompile Include="terrain.cpp" />
     <ClCompile Include="vessel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +144,8 @@
     <ClInclude Include="GLOBALSETTINGS.h" />
     <ClInclude Include="location_system.h" />
     <ClInclude Include="missile.h" />
+    <ClInclude Include="ResourceClass.h" />
+    <ClInclude Include="terrain.h" />
     <ClInclude Include="vessel.h" />
     <ClInclude Include="VESSELHEADER.h" />
   </ItemGroup>

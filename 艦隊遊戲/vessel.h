@@ -4,12 +4,12 @@
 #include <math.h>
 #include "GLOBALSETTINGS.h"
 #include "location_system.h"
-
+#include "ResourceClass.h"
 using namespace std;
 
 class missile;
 
-class vessel
+class vessel:public ResourceClass
 {
 	friend class MainForm;
 	friend class BattleField;

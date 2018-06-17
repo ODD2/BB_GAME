@@ -22,5 +22,7 @@ public:
 	virtual missile attack(_2D&)throw(int);
 	virtual bool move(double, double);
 protected:
+	//ResourceClass
+	virtual unsigned int PicSerial() { return PICS::PIC_CG; };
 };
 

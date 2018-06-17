@@ -30,6 +30,8 @@ MainForm::MainForm(QWidget *parent)
 	connect(GameTimer, SIGNAL(timeout()), this, SLOT(Tick()));
 	GameTimer->setInterval(UPDATE_PER_MS);
 
+	//Picture Setup
+	createPics();
 }
 
 void MainForm::paintEvent(QPaintEvent *event) {
@@ -125,33 +127,42 @@ inline void MainForm::renderVessle(QPainter& painter) {
 			//picture modification.
 			QMatrix rm;
 			vessel& vs = *(it->second);
-			rm.rotate(-1 * it->second->angle);
-			QPixmap px_tmp = pm_vessel.transformed(rm);
+			rm.rotate(-1 * vs.angle);
+			QPixmap px_tmp = ARRAY_PICS[vs.PicSerial()]->transformed(rm);
 
 			//string modification.
-			string vessel_location = it->second->Location.operator std::string();
+			string vessel_location = vs.Location.operator std::string();
 
 
 			double width_deviation = (double)px_tmp.width() / 2;
 			double height_deviation = (double)px_tmp.height() / 2;
 
-
-			//write vessel name
-			painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
-				it->second->name.c_str());
-
-
 			//draw vessel
-			painter.drawPixmap(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			painter.drawPixmap(
+				vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
 				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
-				px_tmp);
+				px_tmp
+			);
 
 
-			//write vessel location
-			painter.drawText(vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
-				vessel_location.c_str());
+			////write vessel name
+			//painter.drawText(
+			//	vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			//	vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+			//	vs.name.c_str()
+			//);
+
+
+			//
+
+
+			////write vessel location
+			//painter.drawText(
+			//	vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			//	vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
+			//	vessel_location.c_str()
+			//);
+
 		}
 	}
 
@@ -171,13 +182,13 @@ inline void MainForm::renderMissile(QPainter& painter) {
 	for (int i = 0, limit = BF.MISSILE.size(); i < limit; i++) {
 		//picture modification.
 		QMatrix rm;
-		missile * ms = BF.MISSILE[i];
-		rm.rotate(-1 * ms->angle);
-		QPixmap px_tmp = pm_missile.transformed(rm);
+		missile & ms = *(BF.MISSILE[i]);
+		rm.rotate(-1 * ms.angle);
+		QPixmap px_tmp = ARRAY_PICS[ms.PicSerial()]->transformed(rm);
 
 
 		//string modification.
-		string missile_location = ms->Location.to_2D().operator std::string();
+		string missile_location = ms.Location.to_2D().operator std::string();
 
 
 		double width_deviation = (double)px_tmp.width() / 2;
@@ -185,14 +196,16 @@ inline void MainForm::renderMissile(QPainter& painter) {
 
 
 		//draw  missile
-		painter.drawPixmap(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-						   ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
-						   px_tmp);
+		painter.drawPixmap(
+			ms.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			ms.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+			px_tmp);
 
-		//write vessel location
-		painter.drawText(ms->Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-			ms->Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
-			missile_location.c_str());
+		////write vessel location
+		//painter.drawText(
+		//	ms.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+		//	ms.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
+		//	missile_location.c_str());
 
 	}
 
@@ -202,17 +215,21 @@ inline void MainForm::renderMissile(QPainter& painter) {
 
 inline void MainForm::renderEffects(QPainter& painter) {
 
-	for (int i = 0, j = BF.EXPLOSION.size(); i < j; i++) {
-	    explosion & exp_ref = *(BF.EXPLOSION[i]);
-		QPixmap cp_ex = pm_explode.scaled(exp_ref.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
-										  exp_ref.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS));
+	for (int i = 0, j = BF.EFFECT.size(); i < j; i++) {
+
+	    explosion & exp = *(BF.EFFECT[i]);
+
+		QPixmap cp_ex = ARRAY_PICS[exp.PicSerial()]->scaled(
+			exp.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
+			exp.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS)
+		);
 	
 
 		double width_deviation = cp_ex.width() / 2.0;
 		double height_deviation = cp_ex.height() / 2.0;
 
-		painter.drawPixmap(exp_ref.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-					       exp_ref.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+		painter.drawPixmap(exp.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+					       exp.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
 						   cp_ex);
 	}
 
@@ -244,4 +261,13 @@ inline void MainForm::renderLine(QPainter& painter) {
 
 //Pen Resume
 	painter.setPen(pen_saved);
+}
+
+inline void MainForm::createPics() {
+
+	//remember to set pic size
+	ARRAY_PICS[PICS::PIC_NON] = new QPixmap("./Resources/NON.png");
+	ARRAY_PICS[PICS::PIC_BB] = new QPixmap("./Resources/BB.png"); *(ARRAY_PICS[PICS::PIC_BB]) = ARRAY_PICS[PICS::PIC_BB]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
+	ARRAY_PICS[PICS::PIC_MS] = new QPixmap("./Resources/MS.png"); *(ARRAY_PICS[PICS::PIC_MS]) = ARRAY_PICS[PICS::PIC_MS]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+	ARRAY_PICS[PICS::PIC_EX] = new QPixmap("./Resources/EX.png");
 }

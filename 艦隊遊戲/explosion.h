@@ -1,8 +1,9 @@
 #pragma once
-#define EXPLOTION_CONVERGE_SPEED 0.01
+#define EXPLOTION_CONVERGE_SPEED 0.05
 #include "location_system.h"
+#include "ResourceClass.h"
 
-class explosion
+class explosion:public ResourceClass
 {
 	friend class MainForm;
 	friend class BattleField;
@@ -15,5 +16,9 @@ public:
 protected:
 	double radius = 0;
 	_2D Location = {0,0};
+
+
+	//ResourceClass
+	virtual unsigned int PicSerial() { return PICS::PIC_EX; };
 };
 

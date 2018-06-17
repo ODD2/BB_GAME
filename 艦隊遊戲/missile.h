@@ -3,9 +3,11 @@
 #include <string>
 #include "location_system.h"
 #include "GLOBALSETTINGS.h"
+#include "ResourceClass.h"
 using namespace std;
 #define MISSILE_RADIUS 1.5
-class missile
+
+class missile:public ResourceClass
 {
 	friend class vessel;
 	friend class BB;
@@ -36,5 +38,8 @@ protected:
 
 
 	inline void setAngle();
+
+	//ResourceClass
+	virtual unsigned int PicSerial() { return PICS::PIC_MS; };
 };
 

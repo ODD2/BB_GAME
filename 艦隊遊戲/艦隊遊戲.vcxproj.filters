@@ -46,6 +46,12 @@
     <Filter Include="Source Files\Effects">
       <UniqueIdentifier>{75231879-6c0c-436e-8d63-8c65b5df345b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Terrain">
+      <UniqueIdentifier>{24b3f89b-98ce-4cee-b6fe-95495dbc9b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Terrain">
+      <UniqueIdentifier>{fe4af587-ad24-4115-8d5e-49e18b79ce8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="explosion.cpp">
       <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceClass.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="explosion.h">
       <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>Header Files\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceClass.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
