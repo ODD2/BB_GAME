@@ -300,10 +300,10 @@ bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	
 	for (auto T : TEAM[team]) {
 			if (T.second->name == Name) {//=================================
-				missile *p = new missile();
+				missile *p = nullptr;
 				string SN = "Shell_";
 				SN.push_back(team+'A');
-				SN.push_back((Num_shot[team]++)+1+'0');
+				SN.push_back((Num_shot[team]++)+'1');
 				*p = T.second->attack(loc);
 				p->name = SN;
 				MISSILE.push_back(p);
@@ -324,11 +324,10 @@ void BattleField::ULT( int team,string V_name) {
 
 
 	//Location, Destination, Speed, Damage
-	map<string, vessel*>::iterator it = TEAM[team].find(V_name);
-	if (it != TEAM->end()) {
+	if (TEAM[team].count(V_name)) {
 		for (int i = 0; i < 360;i+=15) {
-	
-			missile*p = new missile(_2D(it->second->Location.x, it->second->Location.y), _2D(3*sin(i)+ it->second->Location.x,3*cos(i)+ it->second->Location.y),8, 1);
+			vessel& it = *(TEAM[team][V_name]);
+			missile*p = new missile(_2D(it.Location.x, it.Location.y), _2D(3*sin(i)+ it.Location.x,3*cos(i)+ it.Location.y),8, 1);
 			MISSILE.push_back(p);
 		}
 	}

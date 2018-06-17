@@ -91,7 +91,7 @@ void MainForm::Tick() {
 }
 
 void  MainForm::on_startButton_clicked() {
-	ui.Label_debug->setText("");
+
 	if (ui.TextBox_CommandA->toPlainText().length() != 0) {
 		qDebug() << "A have content:\n" << ui.TextBox_CommandA->toPlainText();
 		//¤ÀªR
