@@ -3,13 +3,13 @@
 #include "BB.h"
 #include <time.h>
 #include  <random>
-
+#include<string>
 
 BattleField::BattleField()
 {
 	srand(time(NULL));
 
-	for (int i = 0; i < 10; i++) {
+	/*for (int i = 0; i < 10; i++) {
 		int team = rand() % 2;
 		string name = "TEST" + to_string(i);
 			
@@ -25,7 +25,8 @@ BattleField::BattleField()
 									  _2D(fmod(rand(),MAP_INTERVALS+1) , fmod(rand(),MAP_INTERVALS+1)),
 									  30, 5));
 		
-	}
+	}*/
+
 }
 
 BattleField::~BattleField()
@@ -114,7 +115,7 @@ inline void BattleField::missileLand() {
 	for (int i = 0; i < MISSILE.size(); i++) {
 		missile * ms_pt = MISSILE[i];
 
-		if (ms_pt->land()) {
+		if (ms_pt->land()) {//==============================================================================================fail
 			
 
 			//BattleLog
@@ -211,4 +212,127 @@ inline void BattleField::terrainDestroyed() {
 
 void BattleField::Log(string title, string content) {
 	BattleLog_TEXT.push_back(title + ":" + content);
+}
+
+//team , type , name , location
+bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc) {
+	for (int i = 0; i < NUM_TEAM;i++) {
+		if (Team==i) {
+			for (auto t:TEAM[i]) {
+				if (t.second->name == Name) {
+					return false;
+				}
+			}
+		}
+	}
+	if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
+	if (Type=="BB") {
+		vessel* p = new BB(Name,Loc);
+		TEAM[Team].insert(make_pair(Name,p));
+	}
+	else if (Type == "CG") {
+		vessel* p = new CG(Name, Loc);
+		TEAM[Team].insert(make_pair(Name, p));
+	}
+	else if (Type == "CV") {
+		vessel* p = new CV(Name, Loc);
+		TEAM[Team].insert(make_pair(Name, p));
+	}
+	else if (Type == "DD") {
+		vessel* p = new DD(Name, Loc);
+		TEAM[Team].insert(make_pair(Name, p));
+	}
+	else {
+		
+		return false;
+	}
+	return true;
+}
+bool BattleField::tagVessel(string Pname, string Nname) {
+
+	for (int i = 0; i < NUM_TEAM;i++) {
+		map<string, vessel*>::iterator it = TEAM[i].find(Pname);
+		map<string, vessel*>::iterator itnew = TEAM[i].find(Nname);
+		if (  it!=TEAM[i].end()   &&  itnew==TEAM[i].end()) {
+			TEAM[i][Nname] = new BB();
+			TEAM[i][Pname]->name = Nname;
+			swap(TEAM[i][Pname],TEAM[i][Nname]);
+			it= TEAM[i].find(Pname);
+			delete it->second;
+			TEAM[i].erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
+//vessel name, angle, speed
+bool BattleField::moveVessel(string Name, double Angle, double Speed) {
+	for (int i = 0; i < NUM_TEAM; i++) {
+		map<string, vessel*>::iterator it = TEAM[i].find(Name);
+		if (it != TEAM[i].end()) {
+			if (!it->second->move(Angle, Speed))return false;
+			else return true;
+		}
+	}
+	return false;
+}
+bool BattleField::defenseMissile(string Name,string shellNmae) {
+	for (int i = 0; i < NUM_TEAM; i++){
+		map<string, vessel*>::iterator it = TEAM[i].find(Name);
+		if (it != TEAM[i].end()) {
+			int mplace = 0;
+			for (auto &X:MISSILE) {
+				if (X->name == shellNmae && it->second->defense(*X) ) {
+
+					MISSILE.erase(MISSILE.begin()+ mplace);
+					return true;
+				}
+				mplace++;
+			}
+			
+		}
+	}
+	return false;
+}
+bool BattleField::fireMissile(string Name,  _2D&loc ,int team, int type) {
+	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
+	
+	for (auto T : TEAM[team]) {
+			if (T.second->name == Name) {//=================================
+				missile *p = new missile();
+				string SN = "Shell_";
+				SN.push_back(team+'A');
+				SN.push_back((Num_shot[team]++)+1+'0');
+				*p = T.second->attack(loc);
+				p->name = SN;
+				MISSILE.push_back(p);
+				//
+				string log = "Team";
+				log.push_back(team + 'A');
+				log += " " + Name + " Fire to (" + to_string(loc.x)+ ","+to_string(loc.y) +")-> "+SN;
+				BattleLog_TEXT.push_back(log);
+				//
+				return true;
+			}
+		}
+	
+	return false;
+}
+
+void BattleField::ULT(string V_name,int team) {
+
+
+	//Location, Destination, Speed, Damage
+	map<string, vessel*>::iterator it = TEAM[team].find(V_name);
+	if (it != TEAM->end()) {
+		for (int i = 0; i < 360;i+=15) {
+	
+			missile*p = new missile(_2D(it->second->Location.x, it->second->Location.y), _2D(3*sin(i)+ it->second->Location.x,3*cos(i)+ it->second->Location.y),8, 1);
+			MISSILE.push_back(p);
+		}
+	}
+	
+	
+
 }

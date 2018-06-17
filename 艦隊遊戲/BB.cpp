@@ -37,7 +37,7 @@ missile BB::attack(_2D& atk_Destination)throw(int) {
 		throw - 1;
 	}
 	else {
-		return missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
+		return  missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
 	}
 }
 
