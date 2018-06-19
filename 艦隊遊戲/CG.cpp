@@ -36,7 +36,11 @@ missile CG::attack(_2D& atk_Destination)throw(int) {
 	if (OutOfRange_2D(atk_Destination)) {
 		throw - 1;
 	}
+	else if (atkCD >= 0) {
+		throw - 2;
+	}
 	else {
+		atkCD = CG_ATTACK_CD;
 		return missile(Location, atk_Destination, CG_MISSILE_SPEED, CG_MISSILE_DAMAGE);
 	}
 }

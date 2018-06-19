@@ -31,11 +31,16 @@ bool CV::defense(missile& missile_obj) {
 	return false;
 }
 
-missile CV::attack(_2D& atk_Destination)throw(int) {
+missile CV::attack(_2D& atk_Destination)
+throw(int) {
 	if (OutOfRange_2D(atk_Destination)) {
 		throw - 1;
 	}
+	else if (atkCD >= 0) {
+		throw - 2;
+	}
 	else {
+		atkCD = CV_ATTACK_CD;
 		return missile(Location, atk_Destination, CV_MISSILE_SPEED, CV_MISSILE_DAMAGE);
 	}
 }

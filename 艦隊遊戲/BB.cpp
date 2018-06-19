@@ -25,7 +25,6 @@ bool BB::defense(missile& missile_obj) {
 	if (!defCD) {
 		defCD = BB_DEFENSE_CD;
 		if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < BB_DEFENSE_RANGE) {
-
 			return true;
 		}
 	}
@@ -34,9 +33,13 @@ bool BB::defense(missile& missile_obj) {
 
 missile BB::attack(_2D& atk_Destination)throw(int) {
 	if (OutOfRange_2D(atk_Destination)) {
-		throw - 1;
+		throw -1;
+	}
+	else if (atkCD >= 0) {
+		throw -2;
 	}
 	else {
+		atkCD = BB_ATTACK_CD;
 		return  missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
 	}
 }

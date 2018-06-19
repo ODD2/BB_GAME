@@ -300,28 +300,41 @@ bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	
 	for (auto T : TEAM[team]) {
 			if (T.second->name == Name) {//=================================
-				missile *p = nullptr;
-				string SN = "Shell_";
-				SN.push_back(team+'A');
-				SN.push_back((Num_shot[team]++)+'1');
-				*p = T.second->attack(loc);
-				p->name = SN;
-				MISSILE.push_back(p);
-				//
-				string log = "Team";
-				log.push_back(team + 'A');
-				log += " " + Name + " Fire to (" + to_string(loc.x)+ ","+to_string(loc.y) +")-> "+SN;
-				BattleLog_TEXT.push_back(log);
-				//
-				return true;
+				try {
+					missile *p = new missile();
+					string SN = "Shell_";
+					SN.push_back(team + 'A');
+					SN.push_back((Num_shot[team]++) + '1');
+					*p = T.second->attack(loc);
+					p->name = SN;
+					MISSILE.push_back(p);
+					//
+					string log = "Team";
+					log.push_back(team + 'A');
+					log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
+					BattleLog_TEXT.push_back(log);
+					//
+					return true;
+				}
+				catch (int e) {
+					if (e == -1) {
+						//OUT OF RANGE
+						return false;
+					}
+					else if(e==-2){
+						//ON COOLDOWN
+						return false;
+					}
+				}
+				catch (...) {
+					return false;
+					//UNKNOWN EXCEPTION
+				}
 			}
 		}
-	
-	return false;
 }
 
 void BattleField::ULT( int team,string V_name) {
-
 
 	//Location, Destination, Speed, Damage
 	if (TEAM[team].count(V_name)) {
@@ -331,7 +344,5 @@ void BattleField::ULT( int team,string V_name) {
 			MISSILE.push_back(p);
 		}
 	}
-	
-	
 
 }

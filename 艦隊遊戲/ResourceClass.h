@@ -19,6 +19,14 @@ enum PICS
 	PIC_END
 };
 
+enum EFFECTS
+{
+	EF_LINE,
+	EF_ROUND_SMALLER,
+	EF_ROUND_LARGER,
+	EF_END,
+};
+
 class ResourceClass
 {
 	
@@ -26,5 +34,6 @@ public:
 	ResourceClass();
 	~ResourceClass();
 	virtual unsigned int PicSerial() { return 0; };
+	
 };
 
