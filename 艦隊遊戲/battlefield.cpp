@@ -216,7 +216,7 @@ void BattleField::Log(string title, string content) {
 
 //team , type , name , location
 bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc) {
-	if (TEAM[Team].count(Name)) {
+	if (!TEAM[Team].count(Name)) {
 		if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
 		if (Type == "BB") {
 			vessel* p = new BB(Name, Loc);
@@ -235,11 +235,11 @@ bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc)
 			TEAM[Team].insert(make_pair(Name, p));
 		}
 		else {
-
 			return false;
 		}
 		return true;
 	}
+	return false;
 }
 bool BattleField::tagVessel(int team,string Pname, string Nname) {
 
@@ -288,24 +288,38 @@ bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
 bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
 
-	if (TEAM[team].count(Name))
-	{
-		missile *p = nullptr;
-		string SN = "Shell_";
-		SN.push_back(team + 'A');
-		SN.push_back((Num_shot[team]++) + 1 + '0');
-		*p = TEAM[team][Name]->attack(loc);
-		p->name = SN;
-		MISSILE.push_back(p);
-		//
-		string log = "Team";
-		log.push_back(team + 'A');
-		log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
-		BattleLog_TEXT.push_back(log);
-		//
-		return true;
+	if (TEAM[team].count(Name)){
+		try {
+			missile *p = new missile();
+			string SN = "Shell_";
+			SN.push_back(team + 'A');
+			SN.push_back((Num_shot[team]++) + '1');
+			*p = TEAM[team][Name]->attack(loc);
+			p->name = SN;
+			MISSILE.push_back(p);
+			//
+			string log = "Team";
+			log.push_back(team + 'A');
+			log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
+			BattleLog_TEXT.push_back(log);
+			//
+			return true;
+		}
+		catch (int e) {
+			if (e == -1) {
+				//OUT OF RANGE
+				return false;
+			}
+			else if (e == -2) {
+				//ON COOLDOWN
+				return false;
+			}
+		}
+		catch (...) {
+			return false;
+			//UNKNOWN EXCEPTION
+		}
 	}
-	return false;
 }
 
 void BattleField::ULT( int team,string V_name) {
