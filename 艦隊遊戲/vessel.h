@@ -2,9 +2,11 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <stdarg.h>
 #include "GLOBALSETTINGS.h"
 #include "location_system.h"
 #include "ResourceClass.h"
+
 using namespace std;
 
 class missile;
@@ -24,17 +26,20 @@ public:
 
 	//action
 	virtual bool hit(missile&);
-	virtual bool defense(missile&)=0;
-	virtual missile* attack(_2D&)throw(int) =0;
+	virtual bool defense(string,...)=0;//mode, va_list
+	virtual missile* attack(string,...)throw(int) =0; //mode ,va_list
 	virtual bool move(double, double) = 0;
 	
 	virtual void tick();
 
 
 	//explanations
-	//virtual string attackHELP()=0;
-	//virtual string defenseHELP()=0;
-
+	virtual string attackHELP() {
+		return "attack.";
+	}
+	virtual string defenseHELP() {
+		return  "defense.";
+	}
 protected:
 	//about position & movement
 	_2D Location = {0.1,0.1};

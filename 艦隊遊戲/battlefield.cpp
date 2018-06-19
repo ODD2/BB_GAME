@@ -272,7 +272,7 @@ bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
 		if (TEAM[team].count(Name)) {
 			int mplace = 0;
 			for (auto X:MISSILE) {
-				if (X->name == shellNmae && TEAM[team][Name]->defense(*X) ) {
+				if (X->name == shellNmae && TEAM[team][Name]->defense("lazer",*X) ) {
 
 					//Defense Lazer Effect Create
 					EFFECT[EFFECTS::EF_LINE].push_back(new LineEffect(QColor(255,0,0),2, 2, TEAM[team][Name]->Location, X->Location.to_2D()));
@@ -297,7 +297,7 @@ bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 			string SN = "Shell_";
 			SN.push_back(team + 'A');
 			SN.push_back((Num_shot[team]++) + '1');
-			p = TEAM[team][Name]->attack(loc);
+			p = TEAM[team][Name]->attack("missile",loc);
 			p->name = SN;
 			MISSILE.push_back(p);
 			//
@@ -315,6 +315,10 @@ bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 			}
 			else if (e == -2) {
 				//ON COOLDOWN
+				return false;
+			}
+			else if (e == -3) {
+				//unknown attack type
 				return false;
 			}
 		}

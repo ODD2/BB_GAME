@@ -21,26 +21,55 @@ DD::DD(string name, const _2D& Location) : vessel(name, Location)
 	HP = DD_HP;
 }
 
-bool DD::defense(missile& missile_obj) {
+bool DD::defense(string mode, ...) {
 	if (!defCD) {
-		defCD = DD_DEFENSE_CD;
-		if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < DD_DEFENSE_RANGE) {
-			return true;
+		if (mode == DD_DEF_MODE_1) {
+			va_list vl;
+			va_start(vl, mode);
+
+
+			missile& missile_obj = va_arg(vl, missile);
+
+			defCD = DD_DEFENSE_CD;
+			if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < DD_DEFENSE_RANGE) {
+				return true;
+			}
+
+
+			va_end(vl);
+		}
+		else {
+			return false;
 		}
 	}
 	return false;
 }
 
-missile* DD::attack(_2D& atk_Destination)throw(int) {
-	if (OutOfRange_2D(atk_Destination)) {
-		throw - 1;
-	}
-	else if (atkCD > 0) {
+missile* DD::attack(string mode, ...)throw(int)
+{
+	if (atkCD)
+	{
 		throw - 2;
 	}
+	else if (mode == DD_ATK_MODE_1) {
+		va_list vl;
+		va_start(vl, mode);
+
+
+		_2D& atk_Destination = va_arg(vl, _2D);
+		if (OutOfRange_2D(atk_Destination)) {
+			throw - 1;
+		}
+		else {
+			atkCD = DD_ATTACK_CD;
+			return new missile(Location, atk_Destination, DD_MISSILE_SPEED, DD_MISSILE_DAMAGE);
+		}
+
+
+		va_end(vl);
+	}
 	else {
-		atkCD = DD_ATTACK_CD;
-		return new missile(Location, atk_Destination, DD_MISSILE_SPEED, DD_MISSILE_DAMAGE);
+		throw - 3;
 	}
 }
 

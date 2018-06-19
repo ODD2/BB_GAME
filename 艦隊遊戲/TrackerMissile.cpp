@@ -16,7 +16,6 @@ TrackerMissile::~TrackerMissile()
 {
 }
 
-
 bool TrackerMissile::tick() {
 	if (target == nullptr|| target->HP <= 0) {
 		return false;
