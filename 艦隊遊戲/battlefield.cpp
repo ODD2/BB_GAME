@@ -216,50 +216,40 @@ void BattleField::Log(string title, string content) {
 
 //team , type , name , location
 bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc) {
-	for (int i = 0; i < NUM_TEAM;i++) {
-		if (Team==i) {
-			for (auto t:TEAM[i]) {
-				if (t.second->name == Name) {
-					return false;
-				}
-			}
+	if (TEAM[Team].count(Name)) {
+		if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
+		if (Type == "BB") {
+			vessel* p = new BB(Name, Loc);
+			TEAM[Team].insert(make_pair(Name, p));
 		}
+		else if (Type == "CG") {
+			vessel* p = new CG(Name, Loc);
+			TEAM[Team].insert(make_pair(Name, p));
+		}
+		else if (Type == "CV") {
+			vessel* p = new CV(Name, Loc);
+			TEAM[Team].insert(make_pair(Name, p));
+		}
+		else if (Type == "DD") {
+			vessel* p = new DD(Name, Loc);
+			TEAM[Team].insert(make_pair(Name, p));
+		}
+		else {
+
+			return false;
+		}
+		return true;
 	}
-	if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
-	if (Type=="BB") {
-		vessel* p = new BB(Name,Loc);
-		TEAM[Team].insert(make_pair(Name,p));
-	}
-	else if (Type == "CG") {
-		vessel* p = new CG(Name, Loc);
-		TEAM[Team].insert(make_pair(Name, p));
-	}
-	else if (Type == "CV") {
-		vessel* p = new CV(Name, Loc);
-		TEAM[Team].insert(make_pair(Name, p));
-	}
-	else if (Type == "DD") {
-		vessel* p = new DD(Name, Loc);
-		TEAM[Team].insert(make_pair(Name, p));
-	}
-	else {
-		
-		return false;
-	}
-	return true;
 }
 bool BattleField::tagVessel(int team,string Pname, string Nname) {
 
 	int i = team;
-		map<string, vessel*>::iterator it = TEAM[i].find(Pname);
-		map<string, vessel*>::iterator itnew = TEAM[i].find(Nname);
-		if (  it!=TEAM[i].end()   &&  itnew==TEAM[i].end()) {
+		if ( TEAM[team].count(Pname) && !TEAM[team].count(Nname)) {
 			TEAM[i][Nname] = new BB();
 			TEAM[i][Pname]->name = Nname;
 			swap(TEAM[i][Pname],TEAM[i][Nname]);
-			it= TEAM[i].find(Pname);
-			delete it->second;
-			TEAM[i].erase(it);
+			delete TEAM[i][Pname];
+			TEAM[i].erase(Pname);
 			return true;
 		}
 	
@@ -269,9 +259,9 @@ bool BattleField::tagVessel(int team,string Pname, string Nname) {
 //vessel name, angle, speed
 bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
 	
-		map<string, vessel*>::iterator it = TEAM[team].find(Name);
-		if (it != TEAM[team].end()) {
-			if (!it->second->move(Angle, Speed))return false;
+		
+		if (TEAM[team].count(Name)) {
+			if (!TEAM[team][Name]->move(Angle, Speed))return false;
 			else return true;
 		}
 	
@@ -279,11 +269,11 @@ bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
 }
 bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
 	
-		map<string, vessel*>::iterator it = TEAM[team].find(Name);
-		if (it != TEAM[team].end()) {
+		
+		if (TEAM[team].count(Name)) {
 			int mplace = 0;
 			for (auto &X:MISSILE) {
-				if (X->name == shellNmae && it->second->defense(*X) ) {
+				if (X->name == shellNmae && TEAM[team][Name]->defense(*X) ) {
 					delete X;
 					MISSILE.erase(MISSILE.begin()+ mplace);
 					return true;
@@ -297,50 +287,33 @@ bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
 }
 bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
-	
-	for (auto T : TEAM[team]) {
-			if (T.second->name == Name) {//=================================
-				try {
-					missile *p = new missile();
-					string SN = "Shell_";
-					SN.push_back(team + 'A');
-					SN.push_back((Num_shot[team]++) + '1');
-					*p = T.second->attack(loc);
-					p->name = SN;
-					MISSILE.push_back(p);
-					//
-					string log = "Team";
-					log.push_back(team + 'A');
-					log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
-					BattleLog_TEXT.push_back(log);
-					//
-					return true;
-				}
-				catch (int e) {
-					if (e == -1) {
-						//OUT OF RANGE
-						return false;
-					}
-					else if(e==-2){
-						//ON COOLDOWN
-						return false;
-					}
-				}
-				catch (...) {
-					return false;
-					//UNKNOWN EXCEPTION
-				}
-			}
-		}
+
+	if (TEAM[team].count(Name))
+	{
+		missile *p = nullptr;
+		string SN = "Shell_";
+		SN.push_back(team + 'A');
+		SN.push_back((Num_shot[team]++) + 1 + '0');
+		*p = TEAM[team][Name]->attack(loc);
+		p->name = SN;
+		MISSILE.push_back(p);
+		//
+		string log = "Team";
+		log.push_back(team + 'A');
+		log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
+		BattleLog_TEXT.push_back(log);
+		//
+		return true;
+	}
+	return false;
 }
 
 void BattleField::ULT( int team,string V_name) {
 
 	//Location, Destination, Speed, Damage
-	if (TEAM[team].count(V_name)) {
+	if (TEAM[team].count(V_name)) {	
 		for (int i = 0; i < 360;i+=15) {
-			vessel& it = *(TEAM[team][V_name]);
-			missile*p = new missile(_2D(it.Location.x, it.Location.y), _2D(3*sin(i)+ it.Location.x,3*cos(i)+ it.Location.y),8, 1);
+			missile*p = new missile(_2D(TEAM[team][V_name]->Location.x, TEAM[team][V_name]->Location.y), _2D(3*sin(i)+ TEAM[team][V_name]->Location.x,3*cos(i)+ TEAM[team][V_name]->Location.y),8, 1);
 			MISSILE.push_back(p);
 		}
 	}
