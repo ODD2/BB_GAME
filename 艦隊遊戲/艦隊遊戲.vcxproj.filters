@@ -81,14 +81,26 @@
     <ClCompile Include="missile.cpp">
       <Filter>Source Files\Missile</Filter>
     </ClCompile>
-    <ClCompile Include="explosion.cpp">
-      <Filter>Source Files\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="terrain.cpp">
       <Filter>Source Files\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="ResourceClass.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundShrink.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="LineEffect.cpp">
+      <Filter>Source Files\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackerMissile.cpp">
+      <Filter>Source Files\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundExpand.cpp">
+      <Filter>Source Files\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,14 +149,29 @@
     <ClInclude Include="missile.h">
       <Filter>Header Files\Missiles</Filter>
     </ClInclude>
-    <ClInclude Include="explosion.h">
-      <Filter>Header Files\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="terrain.h">
       <Filter>Header Files\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="ResourceClass.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundShrink.h">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="LineEffect.h">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="EFFECTHEADER.h">
+      <Filter>Header Files\Vessels</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackerMissile.h">
+      <Filter>Header Files\Missiles</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundExpand.h">
+      <Filter>Header Files\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

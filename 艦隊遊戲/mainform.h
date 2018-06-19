@@ -8,9 +8,11 @@
 #include <qtimer.h>
 #include "GLOBALSETTINGS.h"
 #include "VESSELHEADER.h"
+#include "EFFECTHEADER.h"
+#include "ResourceClass.h"
 #include "ui_mainform.h"
 #include "battlefield.h"
-#include "ResourceClass.h"
+
 #define COMMAND_TYPES 6  //6種功能 在analyze用到
 
 

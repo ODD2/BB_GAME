@@ -20,7 +20,7 @@ class missile:public ResourceClass
 
 public:
 	missile();
-
+	missile(const _3D&, const double&, const double&);
 	//Location, Destination, Speed, Damage
 	missile(const _3D&, const _3D&,const double&,const double&);
 	virtual ~missile();
@@ -32,12 +32,13 @@ protected:
 	_3D Destination = {-1,-1,-1};
 	double angle = 0;
 	double speed = 0;
+	double realSpeed = 0;
 	double damage = 0;
 	double damageRadius = MISSILE_RADIUS;
 	string name="";
 
 
-	inline void setAngle();
+	
 
 	//ResourceClass
 	virtual unsigned int PicSerial() { return PICS::PIC_MS; };

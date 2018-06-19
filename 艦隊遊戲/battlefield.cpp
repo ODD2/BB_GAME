@@ -47,15 +47,17 @@ BattleField::~BattleField()
 	//Delete  Terrain
 
 
-	//Delete Explosion
-	for (int i = 0, j = EFFECT.size(); i < j; i++) {
-		delete EFFECT[i];
+	//Delete effect
+	for (int j = 0; j < EFFECTS::EF_END; j++) {
+		for (int i = 0,k = EFFECT[j].size(); i < k; i++) {
+				delete EFFECT[j][i];
+		}
 	}
 
 }
 
 void BattleField::Tick() {
-	explosionTick();
+	effectTick();
 	missileLand();
 	vesselDestroyed();
 	terrainDestroyed();
@@ -88,13 +90,15 @@ inline void BattleField::missileTick() {
 	}
 }
 
-inline void BattleField::explosionTick() {
-	for (int i = 0; i < EFFECT.size(); i++) {
-		EFFECT[i]->tick();
-		if (EFFECT[i]->radius <= 0) {
-			delete EFFECT[i];
-			EFFECT.erase(EFFECT.begin() + i);
-			i--;
+inline void BattleField::effectTick() {
+	for (int j = 0; j < EFFECTS::EF_END; j++) {
+		for (int i = 0; i < EFFECT[j].size(); i++) {
+			EFFECT[j][i]->tick();
+			if (EFFECT[j][i]->dead()) {
+				delete EFFECT[j][i];
+				EFFECT[j].erase(EFFECT[j].begin() + i);
+				i--;
+			}
 		}
 	}
 }
@@ -121,19 +125,15 @@ inline void BattleField::missileLand() {
 			//BattleLog
 			string dmgVessels = "{";
 
+			//Create effect
+			//EFFECT[EFFECTS::EF_ROUND_SHRINK].push_back(new RoundShrink(PIC_MS_EX,ms_pt->damageRadius, ms_pt->Location.to_2D()));
+			EFFECT[EFFECTS::EF_ROUND_EXPAND].push_back(new RoundExpand(PIC_MS_EX, ms_pt->damageRadius, ms_pt->Location.to_2D()));
 
-			//Create Explosion
-			EFFECT.push_back(new explosion(ms_pt->damageRadius, ms_pt->Location.to_2D()));
-
-	
 			//Check any vessel hits.
 			for (int i = 0; i < NUM_TEAM; i++) {
 				map<string, vessel*>::iterator it = TEAM[i].begin();
 				for (; it != TEAM[i].end(); it++) {
 					if ( it->second->HP > 0 && it->second->hit(*ms_pt) ) {
-
-					
-
 
 						//BattleLog 
 						dmgVessels += it->second->name+
@@ -208,8 +208,6 @@ inline void BattleField::terrainDestroyed() {
 	
 }
 
-
-
 void BattleField::Log(string title, string content) {
 	BattleLog_TEXT.push_back(title + ":" + content);
 }
@@ -241,6 +239,7 @@ bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc)
 	}
 	return false;
 }
+
 bool BattleField::tagVessel(int team,string Pname, string Nname) {
 
 	int i = team;
@@ -267,13 +266,17 @@ bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
 	
 	return false;
 }
+
 bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
-	
 		
 		if (TEAM[team].count(Name)) {
 			int mplace = 0;
-			for (auto &X:MISSILE) {
+			for (auto X:MISSILE) {
 				if (X->name == shellNmae && TEAM[team][Name]->defense(*X) ) {
+
+					//Defense Lazer Effect Create
+					EFFECT[EFFECTS::EF_LINE].push_back(new LineEffect(QColor(255,0,0),2, 2, TEAM[team][Name]->Location, X->Location.to_2D()));
+
 					delete X;
 					MISSILE.erase(MISSILE.begin()+ mplace);
 					return true;
@@ -285,16 +288,16 @@ bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
 	
 	return false;
 }
+
 bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
 	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
-
 	if (TEAM[team].count(Name)){
 		try {
-			missile *p = new missile();
+			missile *p = nullptr;
 			string SN = "Shell_";
 			SN.push_back(team + 'A');
 			SN.push_back((Num_shot[team]++) + '1');
-			*p = TEAM[team][Name]->attack(loc);
+			p = TEAM[team][Name]->attack(loc);
 			p->name = SN;
 			MISSILE.push_back(p);
 			//
@@ -327,7 +330,7 @@ void BattleField::ULT( int team,string V_name) {
 	//Location, Destination, Speed, Damage
 	if (TEAM[team].count(V_name)) {	
 		for (int i = 0; i < 360;i+=15) {
-			missile*p = new missile(_2D(TEAM[team][V_name]->Location.x, TEAM[team][V_name]->Location.y), _2D(3*sin(i)+ TEAM[team][V_name]->Location.x,3*cos(i)+ TEAM[team][V_name]->Location.y),8, 1);
+			missile *p = new missile(_2D(TEAM[team][V_name]->Location.x, TEAM[team][V_name]->Location.y), _2D(3*sin(i)+ TEAM[team][V_name]->Location.x,3*cos(i)+ TEAM[team][V_name]->Location.y),8, 1);
 			MISSILE.push_back(p);
 		}
 	}

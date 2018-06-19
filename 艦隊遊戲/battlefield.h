@@ -2,8 +2,9 @@
 #include <vector>
 #include <map>
 #include "VESSELHEADER.h"
+#include "EFFECTHEADER.h"
 #include "missile.h"
-#include "explosion.h"
+#include "effect.h"
 #include "terrain.h"
 #define NUM_TEAM 2
 
@@ -45,7 +46,7 @@ protected:
 	map<string, vessel*> TEAM[NUM_TEAM];//name vessel
 	vector<missile*> MISSILE;
 	vector<terrain*> TERRAIN;
-	vector<explosion*> EFFECT;
+	vector<effect*> EFFECT[EF_END];
 
 
 	//Ticks
@@ -54,7 +55,7 @@ protected:
 
 	inline void vesselTick();
 	inline void missileTick();
-	inline void explosionTick();
+	inline void effectTick();
 	inline void terrainTick();
 
 	//Collisions

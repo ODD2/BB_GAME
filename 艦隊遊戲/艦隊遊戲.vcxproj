@@ -118,12 +118,16 @@
     <ClCompile Include="CG.cpp" />
     <ClCompile Include="CV.cpp" />
     <ClCompile Include="DD.cpp" />
-    <ClCompile Include="explosion.cpp" />
+    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="LineEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainform.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="ResourceClass.cpp" />
+    <ClCompile Include="RoundExpand.cpp" />
+    <ClCompile Include="RoundShrink.cpp" />
     <ClCompile Include="terrain.cpp" />
+    <ClCompile Include="TrackerMissile.cpp" />
     <ClCompile Include="vessel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -143,12 +147,17 @@
     <ClInclude Include="CG.h" />
     <ClInclude Include="CV.h" />
     <ClInclude Include="DD.h" />
-    <ClInclude Include="explosion.h" />
+    <ClInclude Include="effect.h" />
+    <ClInclude Include="EFFECTHEADER.h" />
     <ClInclude Include="GLOBALSETTINGS.h" />
+    <ClInclude Include="LineEffect.h" />
     <ClInclude Include="location_system.h" />
     <ClInclude Include="missile.h" />
     <ClInclude Include="ResourceClass.h" />
+    <ClInclude Include="RoundExpand.h" />
+    <ClInclude Include="RoundShrink.h" />
     <ClInclude Include="terrain.h" />
+    <ClInclude Include="TrackerMissile.h" />
     <ClInclude Include="vessel.h" />
     <ClInclude Include="VESSELHEADER.h" />
   </ItemGroup>

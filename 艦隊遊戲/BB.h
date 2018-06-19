@@ -20,7 +20,7 @@ public:
 	virtual ~BB();
 
 	virtual bool defense(missile&);
-	virtual missile attack(_2D&)throw(int) ;
+	virtual missile* attack(_2D&)throw(int) ;
 	virtual bool move(double, double);
 protected:
 

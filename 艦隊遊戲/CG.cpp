@@ -32,7 +32,7 @@ bool CG::defense(missile& missile_obj) {
 	return false;
 }
 
-missile CG::attack(_2D& atk_Destination)throw(int) {
+missile* CG::attack(_2D& atk_Destination)throw(int) {
 	if (OutOfRange_2D(atk_Destination)) {
 		throw - 1;
 	}
@@ -41,7 +41,7 @@ missile CG::attack(_2D& atk_Destination)throw(int) {
 	}
 	else {
 		atkCD = CG_ATTACK_CD;
-		return missile(Location, atk_Destination, CG_MISSILE_SPEED, CG_MISSILE_DAMAGE);
+		return new missile(Location, atk_Destination, CG_MISSILE_SPEED, CG_MISSILE_DAMAGE);
 	}
 }
 

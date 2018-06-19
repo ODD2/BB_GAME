@@ -31,7 +31,7 @@ bool BB::defense(missile& missile_obj) {
 	return false;
 }
 
-missile BB::attack(_2D& atk_Destination)throw(int) {
+missile* BB::attack(_2D& atk_Destination)throw(int) {
 	if (OutOfRange_2D(atk_Destination)) {
 		throw -1;
 	}
@@ -40,7 +40,7 @@ missile BB::attack(_2D& atk_Destination)throw(int) {
 	}
 	else {
 		atkCD = BB_ATTACK_CD;
-		return  missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
+		return new missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
 	}
 }
 

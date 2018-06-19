@@ -219,25 +219,61 @@ inline void MainForm::renderMissile(QPainter& painter) {
 }
 
 inline void MainForm::renderEffects(QPainter& painter) {
+	QPen  pen_saved = painter.pen();
 
-	for (int i = 0, j = BF.EFFECT.size(); i < j; i++) {
+	//LINE
+	QPen pen_lazer;
+	for (int i = 0, j = BF.EFFECT[EFFECTS::EF_LINE].size(); i < j; i++) {
+		LineEffect & ef = *(LineEffect*)BF.EFFECT[EFFECTS::EF_LINE][i];
+		pen_lazer.setWidth(ef.width);
+		pen_lazer.setColor(ef.color);
+		painter.setPen(pen_lazer);
+		painter.drawLine(
+			ef.Location.x*(MAP_WIDTH / MAP_INTERVALS),
+			ef.Location.y*(MAP_HEIGHT / MAP_INTERVALS),
+			ef.Destination.x*(MAP_WIDTH / MAP_INTERVALS),
+			ef.Destination.y*(MAP_HEIGHT / MAP_INTERVALS));
+	}
 
-	    explosion & exp = *(BF.EFFECT[i]);
 
-		QPixmap cp_ex = ARRAY_PICS[exp.PicSerial()]->scaled(
-			exp.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
-			exp.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS)
+	//ROUND SHRINK
+	for (int i = 0, j = BF.EFFECT[EFFECTS::EF_ROUND_SHRINK].size(); i < j; i++) {
+
+	    RoundShrink & ef = *(RoundShrink*)BF.EFFECT[EFFECTS::EF_ROUND_SHRINK][i];
+
+		QPixmap cp_ex = ARRAY_PICS[ef.PicSerial()]->scaled(
+			ef.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
+			ef.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS)
 		);
 	
 
 		double width_deviation = cp_ex.width() / 2.0;
 		double height_deviation = cp_ex.height() / 2.0;
 
-		painter.drawPixmap(exp.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-					       exp.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+		painter.drawPixmap(ef.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+					       ef.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
 						   cp_ex);
 	}
 
+	//ROUND EXPAND
+	for (int i = 0, j = BF.EFFECT[EFFECTS::EF_ROUND_EXPAND].size(); i < j; i++) {
+
+		RoundExpand & ef = *(RoundExpand*)BF.EFFECT[EFFECTS::EF_ROUND_EXPAND][i];
+
+		QPixmap cp_ex = ARRAY_PICS[ef.PicSerial()]->scaled(
+			ef.radius * 2 * (MAP_WIDTH / MAP_INTERVALS),
+			ef.radius * 2 * (MAP_HEIGHT / MAP_INTERVALS)
+		);
+
+
+		double width_deviation = cp_ex.width() / 2.0;
+		double height_deviation = cp_ex.height() / 2.0;
+
+		painter.drawPixmap(ef.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+			ef.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+			cp_ex);
+	}
+	painter.setPen(pen_saved);
 }
 
 inline void MainForm::renderLine(QPainter& painter) {
@@ -457,5 +493,5 @@ inline void MainForm::createPics() {
 	ARRAY_PICS[PICS::PIC_DD] = new QPixmap("./Resources/DD.png"); *(ARRAY_PICS[PICS::PIC_DD]) = ARRAY_PICS[PICS::PIC_DD]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 	ARRAY_PICS[PICS::PIC_CG] = new QPixmap("./Resources/CG.png"); *(ARRAY_PICS[PICS::PIC_CG]) = ARRAY_PICS[PICS::PIC_CG]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 	ARRAY_PICS[PICS::PIC_MS] = new QPixmap("./Resources/MS.png"); *(ARRAY_PICS[PICS::PIC_MS]) = ARRAY_PICS[PICS::PIC_MS]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
-	ARRAY_PICS[PICS::PIC_EX] = new QPixmap("./Resources/EX.png");
+	ARRAY_PICS[PICS::PIC_MS_EX] = new QPixmap("./Resources/EX.png");
 }

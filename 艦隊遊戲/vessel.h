@@ -13,19 +13,27 @@ class vessel:public ResourceClass
 {
 	friend class MainForm;
 	friend class BattleField;
+
+	//MISSILES
+	friend class TrackerMissile;
 public:
 	vessel();
 	vessel(string);
 	vessel(string, const _2D&);
 	virtual ~vessel();
 
-	
+	//action
 	virtual bool hit(missile&);
 	virtual bool defense(missile&)=0;
-	virtual missile attack(_2D&)throw(int) =0;
+	virtual missile* attack(_2D&)throw(int) =0;
 	virtual bool move(double, double) = 0;
 	
 	virtual void tick();
+
+
+	//explanations
+	//virtual string attackHELP()=0;
+	//virtual string defenseHELP()=0;
 
 protected:
 	//about position & movement
