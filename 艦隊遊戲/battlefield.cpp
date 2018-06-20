@@ -10,18 +10,17 @@ BattleField::BattleField()
 {
 	srand(time(NULL));
 
-	//for (int i = 0; i < 50; i++) {
-	//	int team = rand() % 2;
-	//	//int team = 1;
-	//	string name = "TEST" + to_string(i);
-	//		
-	//	TEAM[team][name] = new BB(name,
-	//							  _2D(rand() % (MAP_INTERVALS + 1),rand()%(MAP_INTERVALS + 1)));
+	/*for (int i = 0; i < 50; i++) {
+		int team = rand() % 2;
+		string name = "TEST" + to_string(i);
+			
+		TEAM[team][name] = new BB(name,
+								  _2D(rand() % (MAP_INTERVALS + 1),rand()%(MAP_INTERVALS + 1)));
 
-	//	TEAM[team][name]->move(rand()%360, 5);
-	//}
+		TEAM[team][name]->move(rand()%360, 5);
+	}*/
 
-	/*for (int i = 0; i <100; i++) {
+/*for (int i = 0; i <100; i++) {
 		MISSILE.push_back(new missile(_2D(MAP_INTERVALS,MAP_INTERVALS), 
 									  _2D(fmod(rand(),MAP_INTERVALS+1) , fmod(rand(),MAP_INTERVALS+1)),
 									  30, 5));
@@ -263,6 +262,10 @@ bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc)
 				b = false;
 			}
 		}
+		else
+		{
+			b = false;
+		}
 		string log = "Team";
 		log.push_back(Team + 'A');
 		if (b) {
@@ -418,7 +421,7 @@ bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 }
 
 bool BattleField::fireMissile(int team,string Name, string type, ...) {
-	static unsigned int MISSILE_ID[2] = { 0,0 };
+	static unsigned int MISSILE_ID[2] = { 1,1 };
 	string log = "Team"; log.push_back(team + 'A');
 	
 	try {

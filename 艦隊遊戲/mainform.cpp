@@ -24,13 +24,20 @@ MainForm::MainForm(QWidget *parent)
 	Image_Map = Image_Map.scaled(MAP_WIDTH, MAP_HEIGHT);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
 	ui.Label_Map->setPixmap(QPixmap::fromImage(Image_Map));
 		
-	//
+	//BAK
 	QPixmap bkgnd("./Resources/background.png");
 	bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
 	QPalette palette;
 	palette.setBrush(QPalette::Background, bkgnd);
 	this->setPalette(palette);
+	//
 
+	//LABEL
+	ui.Label_CommandA->setStyleSheet("QLabel{color: white; }");
+	ui.Label_CommandB->setStyleSheet("QLabel{color: white; }");
+	ui.Label_GameTime->setStyleSheet("QLabel{color: white; }");
+	ui.Label_BattleLog->setStyleSheet("QLabel{color: white; }");
+	//======
 	//GameTime(Recorder) Setup
 	GameTime = new QTime(0, 0, 0, 0);
 
