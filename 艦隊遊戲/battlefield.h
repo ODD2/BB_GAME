@@ -64,7 +64,7 @@ protected:
 	//Clear up
 	inline void vesselDestroyed();
 	inline void terrainDestroyed();
-
+	inline void vesselCollision();
 
 	void Log(string title, string content);
 	vector<string> BattleLog_TEXT;

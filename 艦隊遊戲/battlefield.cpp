@@ -62,6 +62,7 @@ void BattleField::Tick() {
 	vesselTick();
 	missileTick();
 	terrainTick();
+	vesselCollision();
 }
 
 inline void BattleField::vesselTick() {
@@ -207,7 +208,25 @@ inline void BattleField::vesselDestroyed() {
 inline void BattleField::terrainDestroyed() {
 	
 }
-
+inline void BattleField::vesselCollision() {
+	for (int i = 0; i < NUM_TEAM;i++) {
+		for (auto &V1 : TEAM[i]) {
+			for (int j = i + 1; j < NUM_TEAM;j++) {
+				for (auto  &V2:TEAM[j]) {
+					if (Distance_2D((V1.second->Location),(V2.second->Location))<0.1 && (V1.second->speed!=0||V2.second->speed!=0 )) {
+						string v1Name=V1.second->name, v2Name=V2.second->name;
+						v1Name += " crash into " + v2Name + "!(HP-1)";
+						BattleLog_TEXT.push_back(v1Name);
+						V1.second->speed = 0;
+						V1.second->HP -= 1;
+						V2.second->speed = 0;
+						V2.second->HP -= 1;
+					}
+				}
+			}
+		}
+	}
+}
 
 
 void BattleField::Log(string title, string content) {
@@ -216,6 +235,7 @@ void BattleField::Log(string title, string content) {
 
 //team , type , name , location
 bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc) {
+	if (Name == "")return false;
 	if (!TEAM[Team].count(Name)) {
 		if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
 		if (Type == "BB") {
@@ -242,7 +262,7 @@ bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc)
 	return false;
 }
 bool BattleField::tagVessel(int team,string Pname, string Nname) {
-
+	if (Pname == "" || Nname=="")return false;
 	int i = team;
 		if ( TEAM[team].count(Pname) && !TEAM[team].count(Nname)) {
 			TEAM[i][Nname] = new BB();

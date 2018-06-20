@@ -289,37 +289,29 @@ void MainForm::analyze(string command,int team) {
 			at = buffer.find(type[i]);
 			if (at == 0) {
 				mod = i;
+				buffer.assign(buffer.begin()+type[i].length()+1,buffer.end());
 				break;
 			}			
 		}
+		strstream str;
+		str << buffer;
 		if (mod == 0) {
-			string vessel_name, vessel_type, twoDX, twoDY;
-			at = buffer.find(' ');
-			at2 = buffer.find(' ', at + 1);
-			if (!checkText(at, at2))break;
-			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			at = buffer.find('(', at2 + 1);
-			if (!checkText(at, at2))break;
-			vessel_type.assign(buffer.begin() + at2 + 1, buffer.begin() + at - 1);
-			at = buffer.find('(');
-			at2 = buffer.find(',');
-			if (!checkText(at, at2))break;
-			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			at = buffer.find(')', at2 + 1);
-			if (!checkText(at, at2))break;
-			twoDY.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
-			double x = stod(twoDX);
-			if (x == 20.0)x = 19.9; else if (x == 0.0) x = 0.1;
-			double y=stod(twoDY);
-			if (y == 20.0)y = 19.9; else if (y == 0.0) y = 0.1;
-			_2D loc{x,y};
+			string vessel_name, vessel_type, loc_str;
+			char c; double twoDx, twoDy;
+			str >> vessel_name >> vessel_type >> loc_str;
+			strstream loc_s; loc_s << loc_str;
+			loc_s >> c >> twoDx >> c >> twoDy >> c;
+			
+			if (twoDx == 20.0)twoDx = 19.9; else if (twoDx == 0.0) twoDx = 0.1;
+			if (twoDy == 20.0)twoDy = 19.9; else if (twoDy == 0.0) twoDy = 0.1;
+			_2D loc{twoDx,twoDy};
 			string log = "Team";
 			log.push_back(team + 'A');
 			if (BF.addVessel(team, vessel_type, vessel_name, loc)) {
-				log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Success";
+				log += " SET " + vessel_name + " with " + vessel_type + " at(" + to_string(twoDx)  + "," + to_string(twoDy) + ")->Success";
 			}
 			else {
-				log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Fail";
+				log += " SET " + vessel_name + " with " + vessel_type + " at(" + to_string(twoDx) + "," + to_string(twoDy) + ")->Fail";
 			}
 			BF.BattleLog_TEXT.push_back(log);
 #ifdef Edebug
@@ -328,23 +320,18 @@ void MainForm::analyze(string command,int team) {
 #endif // Edebug
 		}
 		else if (mod == 1) {
-			string vessel_name, twoDX, twoDY;
-			at = buffer.find(' ');
-			at2 = buffer.find(' ',at+1);
-			if (!checkText(at, at2))break;
-			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			at = buffer.find('(', at2 + 1);
-			at2 = buffer.find(',',at+1);
-			if (!checkText(at, at2))break;
-			twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			at = buffer.find(')', at2 + 1);
-			if (!checkText(at, at2))break;
-			twoDY.assign(buffer.begin() + at2+1, buffer.begin() + at);
-			_2D loc{ stod(twoDX),stod(twoDY) };
+			string vessel_name,loc_str;
+			double twoDX, twoDY;
+			char c;
+			str >> vessel_name >> loc_str;
+			strstream loc_s;
+			loc_s << loc_str;
+			loc_s >> c >> twoDX >> c >> twoDY >> c;
+			_2D loc{ twoDX,twoDY };
 			if (!BF.fireMissile(team,vessel_name, loc,team)) {
 				string log = "Team";
 				log.push_back(team + 'A');
-				log += " " + vessel_name + " Fire to (" + twoDX + "," + twoDY + ")-> Fail"  ;
+				log += " " + vessel_name + " Fire to (" + to_string(twoDX) + "," + to_string(twoDY) + ")-> Fail"  ;
 				BF.BattleLog_TEXT.push_back(log);
 			}
 			
@@ -356,11 +343,8 @@ void MainForm::analyze(string command,int team) {
 		}
 		else if (mod == 2) {
 			string vessel_name,shellname;
-			at = buffer.find(' ');
-			at2 = buffer.find(' ', at + 1);
-			if (!checkText(at, at2))break;
-			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			shellname.assign(buffer.begin() + at2 + 1, buffer.end());
+			
+			str >> vessel_name >> shellname;
 			if (BF.defenseMissile(team,vessel_name, shellname)) {
 				string log = vessel_name+" DEFENSE "+shellname+" -> Hit" ;
 				BF.BattleLog_TEXT.push_back(log);
@@ -379,11 +363,8 @@ void MainForm::analyze(string command,int team) {
 			string log = "Team";
 			log.push_back(team + 'A');
 			string vessel_name, newname;
-			at = buffer.find(' ');
-			at2 = buffer.find(' ', at + 1);
-			if (!checkText(at, at2))break;
-			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			newname.assign(buffer.begin()+at2+1,buffer.end());
+			
+			str >> vessel_name >> newname;
 			if (BF.tagVessel(team,vessel_name, newname)) {
 				log += " RENAME " + vessel_name + " to " + newname + " -> Success";
 			}
@@ -397,22 +378,16 @@ void MainForm::analyze(string command,int team) {
 #endif // Edebug
 		}
 		else if (mod==4) {
-			string vessel_name,speed,angle;
-			at = buffer.find(' ');
-			at2 = buffer.find(' ', at + 1);
-			if (!checkText(at, at2))break;
-			vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-			at = buffer.find(' ', at2 + 1);
-			if (!checkText(at, at2))break;
-			speed.assign(buffer.begin()+at2+1, buffer.begin()+at);
-			angle.assign(buffer.begin()+at+1  , buffer.end());
+			string vessel_name;
+			double speed, angle;
+			str >> vessel_name >> speed >> angle;
 			string log = "Team";
 			log.push_back(team + 'A');
-			if (BF.moveVessel(team,vessel_name, stod(angle), stod(speed))) {
-				log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Success";	
+			if (BF.moveVessel(team,vessel_name, angle,speed)) {
+				log += " " + vessel_name + " MOVE to " + to_string(angle) + " as " + to_string(speed) + "-> Success";
 			}
 			else {
-				log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Fail";
+				log += " " + vessel_name + " MOVE to " + to_string(angle) + " as " + to_string(speed) + "->Fail";
 			}
 			BF.BattleLog_TEXT.push_back(log);
 #ifdef Edebug
@@ -421,10 +396,9 @@ void MainForm::analyze(string command,int team) {
 #endif // Edebug
 		}
 		else if (mod == 5) {
-			at = buffer.find(' ');
-			if (!checkText(at,0))break;
+		
 			string V_name;
-			V_name.assign(buffer.begin()+at+1,buffer.end());
+			str >> V_name;
 			BF.ULT(team,V_name);
 			string log = V_name + " use ULT";
 			BF.BattleLog_TEXT.push_back(log);
@@ -438,15 +412,7 @@ void MainForm::analyze(string command,int team) {
 	}
 }
 
-bool MainForm::checkText(int at, int at2) {
-	if (at == -1) {
-		return false;
-	}
-	else if (at2 == -1) {
-		return false;
-	}
-	return true;
-}
+
 
 inline void MainForm::createPics() {
 

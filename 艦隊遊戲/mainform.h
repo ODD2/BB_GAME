@@ -54,5 +54,5 @@ private:
 
 //е\пр
 	void analyze(string,int);//д└кR command+team
-	bool MainForm::checkText(int , int );
+	
 };
