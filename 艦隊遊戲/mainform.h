@@ -7,6 +7,7 @@
 #include <Qtime>
 #include <qtimer.h>
 #include "GLOBALSETTINGS.h"
+#include "GLOBALCOMMAD.h"
 #include "VESSELHEADER.h"
 #include "EFFECTHEADER.h"
 #include "ResourceClass.h"

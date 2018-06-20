@@ -26,20 +26,19 @@ bool DD::defense(string mode, ...) {
 		if (mode == DD_DEF_MODE_1) {
 			va_list vl;
 			va_start(vl, mode);
-
-
 			missile& missile_obj = va_arg(vl, missile);
+			va_end(vl);
 
 			defCD = DD_DEFENSE_CD;
-			if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < DD_DEFENSE_RANGE) {
+			if (Distance_2D(this->Location, missile_obj.Location.to_2D()) <= DD_DEFENSE_RANGE) {
 				return true;
 			}
 
-
-			va_end(vl);
+			return false;
+			
 		}
 		else {
-			return false;
+			throw - 2;
 		}
 	}
 	return false;

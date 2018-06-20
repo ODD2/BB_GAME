@@ -18,3 +18,6 @@
 #define LOCATION_DISPLAY_WIDTH 4
 
 #define TEXT_PIXEL 8
+
+
+#define DEF_NOVA_RANGE 3

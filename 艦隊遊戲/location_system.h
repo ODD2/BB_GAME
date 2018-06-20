@@ -97,6 +97,6 @@ inline double Distance_3D(_3D const & lhs, _3D const & rhs) {
 	return pow(x*x + y*y + z*z, 0.5);
 }
 
-inline double Angle_2D(const _2D& Destination, const _2D& Location) {
+inline double Angle_2D( const _2D& Location , const _2D& Destination) {
 	return -1 * atan2(Destination.y - Location.y, Destination.x - Location.x) * 180 / _PI_;
 }

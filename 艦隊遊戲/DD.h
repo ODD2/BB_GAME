@@ -1,5 +1,6 @@
 #pragma once
 #include "vessel.h"
+#include "GLOBALCOMMAD.h"
 //Attributes
 #define DD_MAX_SPEED 3
 #define DD_MISSILE_SPEED 3
@@ -12,12 +13,13 @@
 
 //Attack Definitions
 #define DD_ATTACK_MODES 1
-#define DD_ATK_MODE_1 "missile"
+#define DD_ATK_MODE_1  ATTACK_MISSILE
+
 
 
 //Defense Definitions
 #define DD_DEFENSE_MODES 1
-#define DD_DEF_MODE_1 "lazer"
+#define DD_DEF_MODE_1 DEFENSE_LAZER
 
 class DD :
 	public vessel

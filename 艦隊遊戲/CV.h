@@ -1,5 +1,6 @@
 #pragma once
 #include "vessel.h"
+#include "GLOBALCOMMAD.h"
 //Attributes
 #define CV_MAX_SPEED 1
 #define CV_MISSILE_SPEED 4
@@ -12,12 +13,12 @@
 
 //Attack Definitions
 #define CV_ATTACK_MODES 1
-#define CV_ATK_MODE_1 "missile"
+#define CV_ATK_MODE_1 ATTACK_MISSILE
 
 
 //Defense Definitions
 #define CV_DEFENSE_MODES 1
-#define CV_DEF_MODE_1 "lazer"
+#define CV_DEF_MODE_1 DEFENSE_LAZER
 
 class CV :
 	public vessel

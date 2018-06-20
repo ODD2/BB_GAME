@@ -1,9 +1,10 @@
 #include <iostream>
+#include <stdarg.h>
+#include <time.h>
+#include <random>
+#include <string>
 #include "battlefield.h"
 #include "BB.h"
-#include <time.h>
-#include  <random>
-#include<string>
 
 BattleField::BattleField()
 {
@@ -267,66 +268,137 @@ bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
 	return false;
 }
 
-bool BattleField::defenseMissile(int team,string Name,string shellNmae) {
+bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 		
-		if (TEAM[team].count(Name)) {
-			int mplace = 0;
-			for (auto X:MISSILE) {
-				if (X->name == shellNmae && TEAM[team][Name]->defense("lazer",*X) ) {
+		if(type == DEFENSE_LAZER){
 
-					//Defense Lazer Effect Create
-					EFFECT[EFFECTS::EF_LINE].push_back(new LineEffect(QColor(255,0,0),2, 2, TEAM[team][Name]->Location, X->Location.to_2D()));
+			va_list vl;
+			va_start(vl, type);
+			string shellName = va_arg(vl, string);
+			va_end(vl);
 
-					delete X;
-					MISSILE.erase(MISSILE.begin()+ mplace);
-					return true;
+			if (TEAM[team].count(Name)) {
+				try {
+					int mplace = 0;
+					for (auto X : MISSILE) {
+						if (X->name == shellName && TEAM[team][Name]->defense(DEFENSE_LAZER, *X)) {
+
+							//Defense Lazer Effect Create
+							EFFECT[EFFECTS::EF_LINE].push_back(new LineEffect(QColor(255, 0, 0), 2, 2, TEAM[team][Name]->Location, X->Location.to_2D()));
+
+							delete X;
+							MISSILE.erase(MISSILE.begin() + mplace);
+							return true;
+						}
+						mplace++;
+					}
 				}
-				mplace++;
+				catch (int e) {
+					if (e == -2) {
+						//unkown type.
+					}
+				}
+				catch (...) {
+					//unkown exception
+				}
 			}
-			
+
 		}
+		else if (type == DEFENSE_NOVA) {
+			if (TEAM[team].count(Name)) {
+				try {
+					if (TEAM[team][Name]->defense(type)) {
+						//Create Nova Effect
+						EFFECT[EFFECTS::EF_ROUND_EXPAND].push_back(new RoundExpand(PICS::PIC_DEF_NOVA, DEF_NOVA_RANGE, TEAM[team][Name]->Location));
+
+						int mplace = 0;
+						for (int i = 0; i < MISSILE.size();i++) {
+							if (Distance_2D(TEAM[team][Name]->Location,   MISSILE[i]->Location.to_2D()) <= DEF_NOVA_RANGE) {
+								delete MISSILE[i];
+								MISSILE.erase(MISSILE.begin() + mplace);
+								i -= 1;
+							}
+						}
+						return true;
+					}
+				}
+				catch (int e) {
+					if (e == -2);//unkown def type.
+				}
+				catch (...){
+					//unknown exception
+				}
+			}
+		}
+		else {
+			return false;
+		}
+		
+		return false;
 	
-	return false;
 }
 
-bool BattleField::fireMissile(int team,string Name,  _2D&loc , int type) {
-	if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
-	if (TEAM[team].count(Name)){
-		try {
-			missile *p = nullptr;
-			string SN = "Shell_";
-			SN.push_back(team + 'A');
-			SN.push_back((Num_shot[team]++) + '1');
-			p = TEAM[team][Name]->attack("missile",loc);
-			p->name = SN;
-			MISSILE.push_back(p);
-			//
-			string log = "Team";
-			log.push_back(team + 'A');
-			log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
-			BattleLog_TEXT.push_back(log);
-			//
-			return true;
-		}
-		catch (int e) {
-			if (e == -1) {
-				//OUT OF RANGE
-				return false;
+bool BattleField::fireMissile(int team,string Name, string type, ...) {
+	if (type == ATTACK_MISSILE) {
+
+		va_list vl;
+		va_start(vl, type);
+		_2D& loc = va_arg(vl,_2D);
+		va_end(vl);
+
+		if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
+		if (TEAM[team].count(Name)) {
+			string log = "Team"; log.push_back(team + 'A');
+			try {
+				missile *p = nullptr;
+				p = TEAM[team][Name]->attack(type,loc);
+
+
+				string SN = "Shell_";
+				SN.push_back(team + 'A');
+				SN.push_back((Num_shot[team]++) + '1');
+
+				p->name = SN;
+
+				MISSILE.push_back(p);
+
+				//SUCCESS LOG
+				{
+					log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ")-> " + SN;
+					BattleLog_TEXT.push_back(log);
+				}
+				return true;
 			}
-			else if (e == -2) {
-				//ON COOLDOWN
-				return false;
+			catch (int e) {
+				if (e == -1) {
+					log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ") -> Failed: Out Of Range";
+					BattleLog_TEXT.push_back(log);
+					return false;
+				}
+				else if (e == -2) {
+					//ON COOLDOWN
+					return false;
+				}
+				else if (e == -3) {
+					//unknown attack type
+					return false;
+				}
 			}
-			else if (e == -3) {
-				//unknown attack type
+			catch (...) {
 				return false;
+				//UNKNOWN EXCEPTION
 			}
 		}
-		catch (...) {
-			return false;
-			//UNKNOWN EXCEPTION
-		}
+
 	}
+	else if (type == ATTACK_TRACKER)
+	{
+
+	}
+	else {
+		return false;
+	}
+	
 }
 
 void BattleField::ULT( int team,string V_name) {

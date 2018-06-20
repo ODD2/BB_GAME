@@ -1,5 +1,6 @@
 #pragma once
 #include "vessel.h"
+#include "GLOBALCOMMAD.h"
 //Attributes
 #define CG_MAX_SPEED 2
 #define CG_MISSILE_SPEED 3
@@ -13,12 +14,12 @@
 
 //Attack Definitions
 #define CG_ATTACK_MODES 1
-#define CG_ATK_MODE_1 "missile"
+#define CG_ATK_MODE_1 ATTACK_MISSILE
 
 
 //Defense Definitions
 #define CG_DEFENSE_MODES 1
-#define CG_DEF_MODE_1 "lazer"
+#define CG_DEF_MODE_1 DEFENSE_LAZER
 class CG :
 	public vessel
 {

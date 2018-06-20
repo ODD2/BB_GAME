@@ -21,7 +21,7 @@ bool TrackerMissile::tick() {
 		return false;
 	}
 
-	Angle_2D(Location.to_2D(), target->Location);
+	angle = Angle_2D(Location.to_2D(), target->Location);
 	double radial = angle / 180 * _PI_;
 	Location.x += realSpeed * cos(radial);
 	Location.y -= realSpeed * sin(radial);

@@ -173,5 +173,8 @@
     <ClInclude Include="RoundExpand.h">
       <Filter>Header Files\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="GLOBALCOMMAD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

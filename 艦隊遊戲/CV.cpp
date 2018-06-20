@@ -25,20 +25,19 @@ bool CV::defense(string mode, ...) {
 		if (mode == CV_DEF_MODE_1) {
 			va_list vl;
 			va_start(vl, mode);
-
-
 			missile& missile_obj = va_arg(vl, missile);
+			va_end(vl);
 
 			defCD = CV_DEFENSE_CD;
-			if (Distance_2D(this->Location, missile_obj.Location.to_2D()) < CV_DEFENSE_RANGE) {
+			if (Distance_2D(this->Location, missile_obj.Location.to_2D()) <= CV_DEFENSE_RANGE) {
 				return true;
 			}
 
-
-			va_end(vl);
+			return false;
+		
 		}
 		else {
-			return false;
+			throw - 2;
 		}
 	}
 	return false;

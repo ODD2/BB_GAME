@@ -1,0 +1,10 @@
+#pragma once
+//ATTACK
+#define ATTACK_TYPES 2
+#define ATTACK_MISSILE "MISSILE"
+#define ATTACK_TRACKER "TRACKER"
+
+//DEFENSE
+#define DEFNESE_TYPES 1
+#define DEFENSE_LAZER "LAZER"
+#define DEFENSE_NOVA "NOVA"

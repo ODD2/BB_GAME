@@ -149,6 +149,7 @@
     <ClInclude Include="DD.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="EFFECTHEADER.h" />
+    <ClInclude Include="GLOBALCOMMAD.h" />
     <ClInclude Include="GLOBALSETTINGS.h" />
     <ClInclude Include="LineEffect.h" />
     <ClInclude Include="location_system.h" />

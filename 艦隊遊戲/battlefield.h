@@ -32,11 +32,11 @@ public:
 	//tesm, vessel name, angle, speed
 	bool moveVessel(int, string, double, double);
 
-	//team, vessel name, destination,  missile type
-	bool fireMissile(int,  string, _2D&, int = -1);
+	//team, vessel name, attack type, ...
+	bool fireMissile(int, string, string, ...);
 
-	//team, vessel name shell name
-	bool defenseMissile(int, string, string);
+	//team, vessel name, defense type,...
+	bool defenseMissile(int, string, string,...);
 
 	//ult vessel_name  team
 	void ULT(int,string);
