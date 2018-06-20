@@ -176,5 +176,8 @@
     <ClInclude Include="GLOBALCOMMAD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MISSILEHEADER.h">
+      <Filter>Header Files\Missiles</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,8 +2,8 @@
 #include "vessel.h"
 #include "GLOBALCOMMAD.h"
 //Attributes
-#define BB_MAX_SPEED 1
-#define BB_MISSILE_SPEED 2
+#define BB_MAX_SPEED 5
+#define BB_MISSILE_SPEED 1
 #define BB_MISSILE_DAMAGE 3
 #define BB_DEFENSE_RANGE 10
 #define BB_ATTACK_RANGE 20

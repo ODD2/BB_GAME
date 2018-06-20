@@ -1,4 +1,13 @@
 #pragma once
+//COMMAND
+#define COMMAND_SET "SET"
+#define COMMAND_FIRE "FIRE"
+#define COMMAND_DEFENSE "DEFENSE"
+#define COMMAND_TAG "TAG"
+#define COMMAND_MOVE "MOVE"
+#define COMMAND_ULT "ULT"
+#define COMMAND_SPECIAL "SPECIAL"
+
 //ATTACK
 #define ATTACK_TYPES 2
 #define ATTACK_MISSILE "MISSILE"
@@ -8,3 +17,4 @@
 #define DEFNESE_TYPES 1
 #define DEFENSE_LAZER "LAZER"
 #define DEFENSE_NOVA "NOVA"
+

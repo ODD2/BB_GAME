@@ -154,6 +154,7 @@
     <ClInclude Include="LineEffect.h" />
     <ClInclude Include="location_system.h" />
     <ClInclude Include="missile.h" />
+    <ClInclude Include="MISSILEHEADER.h" />
     <ClInclude Include="ResourceClass.h" />
     <ClInclude Include="RoundExpand.h" />
     <ClInclude Include="RoundShrink.h" />

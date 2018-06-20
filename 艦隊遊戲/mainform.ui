@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1298</width>
-    <height>715</height>
+    <width>1315</width>
+    <height>717</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,6 +18,9 @@
   </property>
   <property name="windowTitle">
    <string>BattleShip</string>
+  </property>
+  <property name="toolTipDuration">
+   <number>-1</number>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -202,16 +205,30 @@
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="Label_BackGround">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1311</width>
+      <height>661</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
    <zorder>Label_Map</zorder>
-   <zorder>Label_Battlefield</zorder>
+   <zorder>Label_BackGround</zorder>
    <zorder>layoutWidget</zorder>
+   <zorder>Label_Battlefield</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1298</width>
+     <width>1315</width>
      <height>21</height>
     </rect>
    </property>

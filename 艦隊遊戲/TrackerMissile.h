@@ -13,6 +13,6 @@ public:
 protected:
 	vessel * target;
 	//ResourceClass
-	virtual unsigned int PicSerial() { return PICS::PIC_ATK_MS; };
+	virtual unsigned int PicSerial() { return PICS::PIC_ATK_TRACKER; };
 };
 

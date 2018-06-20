@@ -51,7 +51,7 @@ bool BB::defense(string mode, ...) {
 	return false;
 }
 
-missile* BB::attack(string mode, ...)throw(int) 
+missile* BB:: attack(string mode, ...)throw(int) 
 {
 	if (atkCD)
 	{
@@ -64,7 +64,7 @@ missile* BB::attack(string mode, ...)throw(int)
 
 		_2D& atk_Destination = va_arg(vl, _2D);
 		if (OutOfRange_2D(atk_Destination)) {
-			throw -1;
+			throw atk_Destination;
 		}
 		else {
 			atkCD = BB_ATTACK_CD;
@@ -80,6 +80,7 @@ missile* BB::attack(string mode, ...)throw(int)
 
 		atkCD = BB_ATTACK_CD;
 		vessel * target = va_arg(vl, vessel*);
+		if (target == nullptr) throw target;
 		return new TrackerMissile(Location,target , BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
 
 

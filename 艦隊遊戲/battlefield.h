@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "VESSELHEADER.h"
+#include "MISSILEHEADER.h"
 #include "EFFECTHEADER.h"
 #include "missile.h"
 #include "effect.h"
@@ -39,7 +40,9 @@ public:
 	bool defenseMissile(int, string, string,...);
 
 	//ult vessel_name  team
-	void ULT(int,string);
+	bool ULT(int,string);
+
+	bool Special(int);
 
 protected:
 
@@ -48,23 +51,23 @@ protected:
 	vector<terrain*> TERRAIN;
 	vector<effect*> EFFECT[EF_END];
 
-
 	//Ticks
-	//發射過的飛彈數量
-	int Num_shot[NUM_TEAM] = { 0 };
-
 	inline void vesselTick();
 	inline void missileTick();
 	inline void effectTick();
-	inline void terrainTick();
+	//inline void terrainTick();
 
 	//Collisions
 	inline void missileLand();
-	inline void terrainCollision();
+	//inline void terrainCollision();
 
 	//Clear up
 	inline void vesselDestroyed();
 	inline void terrainDestroyed();
+	inline void vesselCollision();
+
+
+
 
 
 	void Log(string title, string content);

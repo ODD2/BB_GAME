@@ -10,18 +10,18 @@ BattleField::BattleField()
 {
 	srand(time(NULL));
 
-	/*for (int i = 0; i < 10; i++) {
-		int team = rand() % 2;
-		string name = "TEST" + to_string(i);
-			
-		TEAM[team][name] = new BB(name,
-								  _2D(rand() % (MAP_INTERVALS + 1),rand()%(MAP_INTERVALS + 1)
-								  ));
+	//for (int i = 0; i < 50; i++) {
+	//	int team = rand() % 2;
+	//	//int team = 1;
+	//	string name = "TEST" + to_string(i);
+	//		
+	//	TEAM[team][name] = new BB(name,
+	//							  _2D(rand() % (MAP_INTERVALS + 1),rand()%(MAP_INTERVALS + 1)));
 
-		TEAM[team][name]->move(rand()%360, rand()%20);
-	}
+	//	TEAM[team][name]->move(rand()%360, 5);
+	//}
 
-	for (int i = 0; i <100; i++) {
+	/*for (int i = 0; i <100; i++) {
 		MISSILE.push_back(new missile(_2D(MAP_INTERVALS,MAP_INTERVALS), 
 									  _2D(fmod(rand(),MAP_INTERVALS+1) , fmod(rand(),MAP_INTERVALS+1)),
 									  30, 5));
@@ -64,7 +64,8 @@ void BattleField::Tick() {
 	terrainDestroyed();
 	vesselTick();
 	missileTick();
-	terrainTick();
+	//terrainTick();
+	vesselCollision();
 }
 
 inline void BattleField::vesselTick() {
@@ -104,16 +105,16 @@ inline void BattleField::effectTick() {
 	}
 }
 
-inline void BattleField::terrainTick() {
-	for (int i = 0; i < TERRAIN.size(); i++) {
-		if (!TERRAIN[i]->tick()) {
-			//Clear Up TERRAIN
-			delete TERRAIN[i];
-			TERRAIN.erase(TERRAIN.begin() + i);
-			i -= 1;
-		}
-	}
-}
+//inline void BattleField::terrainTick() {
+//	for (int i = 0; i < TERRAIN.size(); i++) {
+//		if (!TERRAIN[i]->tick()) {
+//			//Clear Up TERRAIN
+//			delete TERRAIN[i];
+//			TERRAIN.erase(TERRAIN.begin() + i);
+//			i -= 1;
+//		}
+//	}
+//}
 
 inline void BattleField::missileLand() {
 	//check every missile.
@@ -172,12 +173,12 @@ inline void BattleField::missileLand() {
 
 }
 
-inline void BattleField::terrainCollision() {
-	for (int i = 0, j = TERRAIN.size(); i < j; i++)
-	{
-
-	}
-}
+//inline void BattleField::terrainCollision() {
+//	for (int i = 0, j = TERRAIN.size(); i < j; i++)
+//	{
+//
+//	}
+//}
 
 inline void BattleField::vesselDestroyed() {
 	//Log Vessel Destroyed
@@ -209,67 +210,125 @@ inline void BattleField::terrainDestroyed() {
 	
 }
 
+inline void BattleField::vesselCollision() {
+	for (int i = 0; i < NUM_TEAM;i++) {
+		for (auto &V1 : TEAM[i]) {
+			for (int j = i + 1; j < NUM_TEAM;j++) {
+				for (auto  &V2:TEAM[j]) {
+					if (Distance_2D((V1.second->Location),(V2.second->Location))<0.1 && (V1.second->speed!=0||V2.second->speed!=0 )) {
+						string v1Name=V1.second->name, v2Name=V2.second->name;
+						v1Name += " crash into " + v2Name + "!(HP-1)";
+						BattleLog_TEXT.push_back(v1Name);
+						V1.second->speed = 0;
+						V1.second->HP -= 1;
+						V2.second->speed = 0;
+						V2.second->HP -= 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void BattleField::Log(string title, string content) {
 	BattleLog_TEXT.push_back(title + ":" + content);
 }
 
-//team , type , name , location
 bool BattleField::addVessel(int Team, string Type , string Name, const _2D& Loc) {
-	if (!TEAM[Team].count(Name)) {
-		if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0)return false;
-		if (Type == "BB") {
-			vessel* p = new BB(Name, Loc);
-			TEAM[Team].insert(make_pair(Name, p));
+	try {
+		bool b = true;
+
+		if (!TEAM[Team].count(Name) && Name != "" && Type != "") {
+			if (Loc.x > 20.0 || Loc.x<0 || Loc.y>20.0 || Loc.y < 0) {
+				b = false;
+			}
+			else if (Type == "BB") {
+				vessel* p = new BB(Name, Loc);
+				TEAM[Team].insert(make_pair(Name, p));
+			}
+			else if (Type == "CG") {
+				vessel* p = new CG(Name, Loc);
+				TEAM[Team].insert(make_pair(Name, p));
+			}
+			else if (Type == "CV") {
+				vessel* p = new CV(Name, Loc);
+				TEAM[Team].insert(make_pair(Name, p));
+			}
+			else if (Type == "DD") {
+				vessel* p = new DD(Name, Loc);
+				TEAM[Team].insert(make_pair(Name, p));
+			}
+			else {
+				b = false;
+			}
 		}
-		else if (Type == "CG") {
-			vessel* p = new CG(Name, Loc);
-			TEAM[Team].insert(make_pair(Name, p));
-		}
-		else if (Type == "CV") {
-			vessel* p = new CV(Name, Loc);
-			TEAM[Team].insert(make_pair(Name, p));
-		}
-		else if (Type == "DD") {
-			vessel* p = new DD(Name, Loc);
-			TEAM[Team].insert(make_pair(Name, p));
+		string log = "Team";
+		log.push_back(Team + 'A');
+		if (b) {
+			log += " SET " + Name + " with " + Type + " at(" + to_string(Loc.x) + "," + to_string(Loc.y) + ")->Success";
 		}
 		else {
-			return false;
+			log += " SET " + Name + " with " + Type + " at(" + to_string(Loc.x) + "," + to_string(Loc.y) + ")->Fail";
 		}
-		return true;
+		BattleLog_TEXT.push_back(log);
+		return b;
 	}
-	return false;
+	catch (...) {
+		return false;
+	}
+	
 }
 
 bool BattleField::tagVessel(int team,string Pname, string Nname) {
+	try {
+		string log = "Team";
+		log.push_back(team + 'A');
 
-	int i = team;
-		if ( TEAM[team].count(Pname) && !TEAM[team].count(Nname)) {
-			TEAM[i][Nname] = new BB();
-			TEAM[i][Pname]->name = Nname;
-			swap(TEAM[i][Pname],TEAM[i][Nname]);
-			delete TEAM[i][Pname];
-			TEAM[i].erase(Pname);
+		if (Pname == "" || Nname == "") {
+		}
+		else if (TEAM[team].count(Pname) && !TEAM[team].count(Nname)) {
+			TEAM[team][Nname] = new BB();
+			TEAM[team][Pname]->name = Nname;
+			swap(TEAM[team][Pname], TEAM[team][Nname]);
+			delete TEAM[team][Pname];
+			TEAM[team].erase(Pname);
+			log += " RENAME " + Pname + " to " + Nname + " -> Success";
+			BattleLog_TEXT.push_back(log);
 			return true;
 		}
-	
-	return false;
+		
+		log += " RENAME " + Pname + " to " + Nname + " -> Fail";
+		BattleLog_TEXT.push_back(log);
+		return false;
+	}
+	catch (...) {
+		return false;
+	}	
 }
 
-//vessel name, angle, speed
 bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
-	
-		
+	try {
+		string log = "Team"; log.push_back(team + 'A');
+
 		if (TEAM[team].count(Name)) {
-			if (!TEAM[team][Name]->move(Angle, Speed))return false;
-			else return true;
+			if (!TEAM[team][Name]->move(Angle, Speed)) {
+				log += " " + Name + " MOVE to " + to_string(Angle) + " as " + to_string(Speed) + "-> Success";
+				BattleLog_TEXT.push_back(log);
+				return true;
+			}
 		}
-	
-	return false;
+
+		log += " " + Name + " MOVE to " + to_string(Angle) + " as " + to_string(Speed) + "->Fail";
+		BattleLog_TEXT.push_back(log);
+		return false;
+	}
+	catch (...) {
+		return false;
+	}	
 }
 
-bool BattleField::defenseMissile(int team, string Name, string type, ...) {
-		
+bool BattleField::defenseMissile(int team, string Name, string type, ...) {	
 		if(type == DEFENSE_LAZER){
 
 			va_list vl;
@@ -288,6 +347,12 @@ bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 
 							delete X;
 							MISSILE.erase(MISSILE.begin() + mplace);
+
+							//Battle Log
+							{
+								string log = Name + " DEFENSE " + shellName + " -> Hit";
+								BattleLog_TEXT.push_back(log);
+							}
 							return true;
 						}
 						mplace++;
@@ -303,6 +368,11 @@ bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 				}
 			}
 
+			//Battle Log
+			{
+				string log = Name + " DEFENSE " + shellName + " -> Fail";
+				BattleLog_TEXT.push_back(log);
+			}
 		}
 		else if (type == DEFENSE_NOVA) {
 			if (TEAM[team].count(Name)) {
@@ -319,6 +389,11 @@ bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 								i -= 1;
 							}
 						}
+						//Battle Log
+						{
+							string log = Name + " ACTIVATE NOVA -> Success";
+							BattleLog_TEXT.push_back(log);
+						}
 						return true;
 					}
 				}
@@ -329,34 +404,43 @@ bool BattleField::defenseMissile(int team, string Name, string type, ...) {
 					//unknown exception
 				}
 			}
+
+			//Battle Log
+			{
+				string log = Name + " ACTIVATE NOVA -> Fail";
+				BattleLog_TEXT.push_back(log);
+			}
+			
 		}
 		else {
 			return false;
 		}
-		
-		return false;
-	
 }
 
 bool BattleField::fireMissile(int team,string Name, string type, ...) {
-	if (type == ATTACK_MISSILE) {
+	static unsigned int MISSILE_ID[2] = { 0,0 };
+	string log = "Team"; log.push_back(team + 'A');
+	
+	try {
+		if (type == ATTACK_MISSILE) {
 
-		va_list vl;
-		va_start(vl, type);
-		_2D& loc = va_arg(vl,_2D);
-		va_end(vl);
+			va_list vl;
+			va_start(vl, type);
+			_2D& loc = va_arg(vl, _2D);
+			va_end(vl);
 
-		if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)return false;
-		if (TEAM[team].count(Name)) {
-			string log = "Team"; log.push_back(team + 'A');
-			try {
+			if (loc.x > 20.0 || loc.x<0 || loc.y>20.0 || loc.y < 0)throw loc;
+
+			if (TEAM[team].count(Name)) {
+
+
 				missile *p = nullptr;
-				p = TEAM[team][Name]->attack(type,loc);
+				p = TEAM[team][Name]->attack(type, loc);
 
 
 				string SN = "Shell_";
 				SN.push_back(team + 'A');
-				SN.push_back((Num_shot[team]++) + '1');
+				SN += to_string(MISSILE_ID[team]++);
 
 				p->name = SN;
 
@@ -368,40 +452,80 @@ bool BattleField::fireMissile(int team,string Name, string type, ...) {
 					BattleLog_TEXT.push_back(log);
 				}
 				return true;
-			}
-			catch (int e) {
-				if (e == -1) {
-					log += " " + Name + " Fire to (" + to_string(loc.x) + "," + to_string(loc.y) + ") -> Failed: Out Of Range";
-					BattleLog_TEXT.push_back(log);
-					return false;
-				}
-				else if (e == -2) {
-					//ON COOLDOWN
-					return false;
-				}
-				else if (e == -3) {
-					//unknown attack type
-					return false;
-				}
-			}
-			catch (...) {
-				return false;
-				//UNKNOWN EXCEPTION
+
+
 			}
 		}
+		else if (type == ATTACK_TRACKER)
+		{
+			va_list vl;
+			va_start(vl, type);
+			string target = va_arg(vl, string);
+			va_end(vl);
+			if (TEAM[team].count(Name)) {
+				if (TEAM[!team].count(target)) {
+					missile *p = nullptr;
+					p = TEAM[team][Name]->attack(type, TEAM[!team][target]);
 
-	}
-	else if (type == ATTACK_TRACKER)
-	{
+					string SN = "Shell_";
+					SN.push_back(team + 'A');
+					SN += to_string(MISSILE_ID[team]++);
 
+					p->name = SN;
+
+					MISSILE.push_back(p);
+
+					//SUCCESS LOG
+					{
+						log += " " + Name + " Fire to " +target + " -> " + SN;
+						BattleLog_TEXT.push_back(log);
+					}
+					return true;
+				}
+			}
+
+			//Battle Log
+			{
+				log = log + " " + Name + " Failed to Fire Tracker Missle -> " + target;
+				BattleLog_TEXT.push_back(log);
+			}
+			return false;
+
+		}
+		else {
+			throw -3;
+		}
 	}
-	else {
+	catch (int e) {
+		if (e == -2) {
+			//ON COOLDOWN
+			log += " " + Name + " CoolDown=" + to_string(TEAM[team][Name]->atkCD);
+			BattleLog_TEXT.push_back(log);
+			return false;
+		}
+		else if (e == -3) {
+			//unknown attack type
+			log += " " + type + " is not in " + Name +"'s Weapon List!" ;
+			BattleLog_TEXT.push_back(log);
+			return false;
+		}
+	}
+	catch (_2D& e) {
+		//out of distance
+		log += " " + Name + " Fire to (" + to_string(e.x) + "," + to_string(e.y) + ") -> Failed: Out Of Range";
+	}
+	catch (vessel *) {
+		//target is nullptr;
 		return false;
+	}
+	catch (...) {
+		return false;
+		//UNKNOWN EXCEPTION
 	}
 	
 }
 
-void BattleField::ULT( int team,string V_name) {
+bool BattleField::ULT( int team,string V_name) {
 
 	//Location, Destination, Speed, Damage
 	if (TEAM[team].count(V_name)) {	
@@ -410,5 +534,47 @@ void BattleField::ULT( int team,string V_name) {
 			MISSILE.push_back(p);
 		}
 	}
+	string log = V_name + " use ULT";
+	BattleLog_TEXT.push_back(log);
+	return true;
+}
 
+bool BattleField::Special(int team) {
+	static unsigned int LIMIT[2] = { 3,3 };
+	if (team==0) {
+
+		if (LIMIT[team]) {
+			LIMIT[team] -= 1;
+			for (auto it = TEAM[1].begin(); it != TEAM[1].end(); it++){
+				MISSILE.push_back(new TrackerMissile(_2D(MAP_INTERVALS/2,0), it->second, 5, 3));
+			}
+			string log = "TeamA Special Attack -> CABOOM , Success";
+			BattleLog_TEXT.push_back(log);
+			return true;
+		}
+		else {
+			string log = "TeamA Special Attack -> CABOOM , Fail";
+			BattleLog_TEXT.push_back(log);
+		}
+
+	}
+	else if (team==1) {
+
+		if (LIMIT[team]) {
+			LIMIT[team] -= 1;
+			for (auto it = TEAM[0].begin(); it != TEAM[0].end(); it++) {
+				it->second->HP -= 2;
+				EFFECT[EF_LINE].push_back(new LineEffect(QColor(0,255,0), 4, 7, _2D(MAP_INTERVALS / 2, 0), it->second->Location));
+			}
+			string log = "TeamB Special Attack -> SHALALA , Success";
+			BattleLog_TEXT.push_back(log);
+			return true;
+		}
+		else {
+			string log = "TeamB Special Attack -> SHALALA , Fail";
+			BattleLog_TEXT.push_back(log);
+		}
+		
+	}
+	return false;
 }

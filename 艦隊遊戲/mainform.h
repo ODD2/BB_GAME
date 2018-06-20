@@ -53,9 +53,17 @@ private:
 	inline void renderLine(QPainter&);
 	//inline void renderTerrain();
 
+//分隔符號
+	inline void setBuffer(string& buf) {
+		for (int i = 0, j = buf.length(); i < j; i++) {
+			if (buf[i] == '(' || buf[i] == ')' || buf[i] == ',') {
+				buf[i] = ' ';
+			}
+		}
+	}
 	
 
 //功能
 	void analyze(string,int);//分析 command+team
-	bool MainForm::checkText(int , int );
+	
 };

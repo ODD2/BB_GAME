@@ -56,7 +56,7 @@ missile* CV::attack(string mode, ...)throw(int)
 
 		_2D& atk_Destination = va_arg(vl, _2D);
 		if (OutOfRange_2D(atk_Destination)) {
-			throw - 1;
+			throw atk_Destination;
 		}
 		else {
 			atkCD = CV_ATTACK_CD;

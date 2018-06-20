@@ -18,12 +18,19 @@ MainForm::MainForm(QWidget *parent)
 	ui.Label_Battlefield->setStyleSheet("border: 1px solid black");
 	ui.Label_Map->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
 	ui.Label_Battlefield->setFixedSize(MAP_WIDTH, MAP_HEIGHT);
+
 	//Label_Map Setup
-	QImage Image_Map("./Resources/image.png");
+	QImage Image_Map("./Resources/image.jpg");
 	Image_Map = Image_Map.scaled(MAP_WIDTH, MAP_HEIGHT);// add Qt::KeepAspectRatio in argument to keep the picture ratio.
 	ui.Label_Map->setPixmap(QPixmap::fromImage(Image_Map));
 		
-	
+	//
+	QPixmap bkgnd("./Resources/background.png");
+	bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+	QPalette palette;
+	palette.setBrush(QPalette::Background, bkgnd);
+	this->setPalette(palette);
+
 	//GameTime(Recorder) Setup
 	GameTime = new QTime(0, 0, 0, 0);
 
@@ -216,7 +223,7 @@ inline void MainForm::renderMissile(QPainter& painter) {
 		//	missile_location.c_str());
 		QPen circle_pen;
 		circle_pen.setColor("red");
-		circle_pen.setWidth(2);
+		circle_pen.setWidth(3);
 		painter.setPen(circle_pen);
 		double WarningRadius = Distance_2D(ms.Location.to_2D(), ms.Destination.to_2D());
 		if (WarningRadius > 3.0) { WarningRadius = 3.0; }
@@ -321,190 +328,85 @@ inline void MainForm::renderLine(QPainter& painter) {
 
 
 //д└кRе\пр
-void MainForm::analyze(string command,int team) {
-		strstream in;
-		in << command;
-		string buffer;
-		string type[COMMAND_TYPES] = { "SET","FIRE","DEFENSE","TAG","MOVE","ULT" };
-		while (getline(in, buffer))
-		{
-			int mod = -1, at = -1, at2 = -1;
-			while (buffer[0] == ' ')buffer.erase(0, 1);
-			while (buffer[buffer.length() - 1] == ' ')buffer.pop_back();
-			int white = buffer.find("  ");
-			while (white != -1) {
-				buffer.erase(white, 1);
-				white = buffer.find("  ");
+void MainForm::analyze(string textBox_String,int team) {
+	stringstream in(textBox_String);
+	string buffer;
+	while (getline(in, buffer))
+	{
+		setBuffer(buffer);
+		stringstream command(buffer);
+		string mod;
+		command >> mod;
+		 if (mod == COMMAND_SET) {
+			string vessel_name, vessel_type;
+			double twoDx, twoDy;
+			command >> vessel_name >> vessel_type>>twoDx>>twoDy;
+
+			if (twoDx == 20.0)twoDx = 19.9; else if (twoDx == 0.0) twoDx = 0.1;
+			if (twoDy == 20.0)twoDy = 19.9; else if (twoDy == 0.0) twoDy = 0.1;
+			_2D loc{ twoDx,twoDy };
+			BF.addVessel(team,vessel_type,vessel_name,loc);
+		}
+		else if (mod == COMMAND_FIRE) {
+			string trigger, atkType;
+			command >> trigger >> atkType;
+
+			if (atkType == ATTACK_MISSILE) {
+				double x = -1; command >> x;
+				double y = -1; command >> y;
+				_2D loc(x, y);
+				BF.fireMissile(team, trigger, atkType, loc);
 			}
-			for (int i = 0; i < COMMAND_TYPES; i++) {
-				at = buffer.find(type[i]);
-				if (at == 0) {
-					mod = i;
-					break;
-				}
-			}
-			if (mod == 0) {
-				string vessel_name, vessel_type, twoDX, twoDY;
-				at = buffer.find(' ');
-				at2 = buffer.find(' ', at + 1);
-				if (!checkText(at, at2))break;
-				vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-				at = buffer.find('(', at2 + 1);
-				if (!checkText(at, at2))break;
-				vessel_type.assign(buffer.begin() + at2 + 1, buffer.begin() + at - 1);
-				at = buffer.find('(');
-				at2 = buffer.find(',');
-				if (!checkText(at, at2))break;
-				twoDX.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-				at = buffer.find(')', at2 + 1);
-				if (!checkText(at, at2))break;
-				twoDY.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
-				double x = stod(twoDX);
-				if (x == 20.0)x = 19.9; else if (x == 0.0) x = 0.1;
-				double y = stod(twoDY);
-				if (y == 20.0)y = 19.9; else if (y == 0.0) y = 0.1;
-				_2D loc{ x,y };
-				string log = "Team";
-				log.push_back(team + 'A');
-				if (BF.addVessel(team, vessel_type, vessel_name, loc)) {
-					log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Success";
-				}
-				else {
-					log += " SET " + vessel_name + " with " + vessel_type + " at(" + twoDX + "," + twoDY + ")->Fail";
-				}
-				BF.BattleLog_TEXT.push_back(log);
-#ifdef Edebug
-				string x = "##" + vessel_name + "##" + vessel_type + "##" + twoDX + "##" + twoDY + "##";
-				ui.Label_debug->setText(QString::fromStdString(x));
-#endif // Edebug
-			}
-			else if (mod == 1) {
-				stringstream atkCommad(buffer);
-				string trigger, atkType;
-				string command;
-				atkCommad >> command >> trigger >> atkType;
-				if (atkType == ATTACK_MISSILE) {
-
-					while (!isalnum(atkCommad.peek()) && atkCommad)atkCommad.get();
-					double x = -1; atkCommad >> x;
-
-					while (!isalnum(atkCommad.peek()) && atkCommad)atkCommad.get();
-
-					double y = -1; atkCommad >> y;
-
-					_2D loc(x, y);
-
-					BF.fireMissile(team, trigger, atkType, loc);
-				}
-				else if (atkType == ATTACK_TRACKER) {
-					string target;
-					atkCommad >> target;
-					BF.fireMissile(team, trigger, atkType, target);
-				}
-				else {
-					///////
-				}
-			}
-			else if (mod == 2) {
-				stringstream defCommad(buffer);
-				string command, trigger, type;
-
-				defCommad >> command >> trigger >> type;
-				if (type == DEFENSE_LAZER) {
-					string shellname;
-					defCommad >> shellname;
-
-					if (BF.defenseMissile(team, trigger, type, shellname)) {
-						string log = trigger + " DEFENSE " + shellname + " -> Hit";
-						BF.BattleLog_TEXT.push_back(log);
-					}
-					else {
-						string log = trigger + " DEFENSE " + shellname + " -> Fail";
-						BF.BattleLog_TEXT.push_back(log);
-					}
-
-				}
-				else if (type == DEFENSE_NOVA) {
-
-					if (BF.defenseMissile(team, trigger, type)) {
-						string log = trigger + " ACTIVATE NOVA -> Success";
-						BF.BattleLog_TEXT.push_back(log);
-					}
-					else {
-						string log = trigger + " ACTIVATE NOVA -> Fail";
-						BF.BattleLog_TEXT.push_back(log);
-					}
-				}
-
-			}
-			else if (mod == 3) {
-				string log = "Team";
-				log.push_back(team + 'A');
-				string vessel_name, newname;
-				at = buffer.find(' ');
-				at2 = buffer.find(' ', at + 1);
-				if (!checkText(at, at2))break;
-				vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-				newname.assign(buffer.begin() + at2 + 1, buffer.end());
-				if (BF.tagVessel(team, vessel_name, newname)) {
-					log += " RENAME " + vessel_name + " to " + newname + " -> Success";
-				}
-				else {
-					log += " RENAME " + vessel_name + " to " + newname + " -> Fail";
-				}
-				BF.BattleLog_TEXT.push_back(log);
-#ifdef Edebug
-				string x = "##" + vessel_name + "##" + newname + "##";
-				ui.Label_debug->setText(QString::fromStdString(x));
-#endif // Edebug
-			}
-			else if (mod == 4) {
-				string vessel_name, speed, angle;
-				at = buffer.find(' ');
-				at2 = buffer.find(' ', at + 1);
-				if (!checkText(at, at2))break;
-				vessel_name.assign(buffer.begin() + at + 1, buffer.begin() + at2);
-				at = buffer.find(' ', at2 + 1);
-				if (!checkText(at, at2))break;
-				speed.assign(buffer.begin() + at2 + 1, buffer.begin() + at);
-				angle.assign(buffer.begin() + at + 1, buffer.end());
-				string log = "Team";
-				log.push_back(team + 'A');
-				if (BF.moveVessel(team, vessel_name, stod(angle), stod(speed))) {
-					log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Success";
-				}
-				else {
-					log += " " + vessel_name + " MOVE to " + angle + " as " + speed + "->Fail";
-				}
-				BF.BattleLog_TEXT.push_back(log);
-#ifdef Edebug
-				string x = "##" + vessel_name + "##" + speed + "##" + angle + "##";
-				ui.Label_debug->setText(QString::fromStdString(x));
-#endif // Edebug
-			}
-			else if (mod == 5) {
-				at = buffer.find(' ');
-				if (!checkText(at, 0))break;
-				string V_name;
-				V_name.assign(buffer.begin() + at + 1, buffer.end());
-				BF.ULT(team, V_name);
-				string log = V_name + " use ULT";
-				BF.BattleLog_TEXT.push_back(log);
+			else if (atkType == ATTACK_TRACKER) {
+				string target;
+				command >> target;
+				BF.fireMissile(team, trigger, atkType, target);
 			}
 			else {
+				///////
 			}
 		}
+		else if (mod == COMMAND_DEFENSE) {
+			string trigger, defType;
+			command >> trigger >> defType;
+
+			if (defType == DEFENSE_LAZER) {
+				string shellname;
+				command >> shellname;
+				BF.defenseMissile(team, trigger, defType, shellname);
+			}
+			else if (defType == DEFENSE_NOVA) {
+				BF.defenseMissile(team, trigger, defType);
+			}
+			else {
+				///
+			}
+		}
+		else if (mod == COMMAND_TAG) {
+			string  Pname, Nname;
+			command >> Pname>> Nname;
+			BF.tagVessel(team,Pname,Nname);
+		}
+		else if (mod == COMMAND_MOVE) {
+			string vessel_name;
+			double speed, angle;
+			command >> vessel_name >> speed >> angle;
+			BF.moveVessel(team,vessel_name,angle,speed);
+		}
+		else if (mod == COMMAND_ULT) {
+			string V_name;
+			command >> V_name;
+			BF.ULT(team, V_name);
+		}
+		else if (mod == COMMAND_SPECIAL) {
+			BF.Special(team);
+		}
+		else {
+		}
+	}
 }
 
-bool MainForm::checkText(int at, int at2) {
-	if (at == -1) {
-		return false;
-	}
-	else if (at2 == -1) {
-		return false;
-	}
-	return true;
-}
+
 
 inline void MainForm::createPics() {
 
@@ -515,6 +417,8 @@ inline void MainForm::createPics() {
 	ARRAY_PICS[PICS::PIC_DD] = new QPixmap("./Resources/DD.png"); *(ARRAY_PICS[PICS::PIC_DD]) = ARRAY_PICS[PICS::PIC_DD]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 	ARRAY_PICS[PICS::PIC_CG] = new QPixmap("./Resources/CG.png"); *(ARRAY_PICS[PICS::PIC_CG]) = ARRAY_PICS[PICS::PIC_CG]->scaled(BATTLE_SHIP_WIDTH, BATTLE_SHIP_HEIGHT);
 	ARRAY_PICS[PICS::PIC_ATK_MS] = new QPixmap("./Resources/MS.png"); *(ARRAY_PICS[PICS::PIC_ATK_MS]) = ARRAY_PICS[PICS::PIC_ATK_MS]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+	ARRAY_PICS[PICS::PIC_ATK_TRACKER] = new QPixmap("./Resources/TRACKER.png");  *(ARRAY_PICS[PICS::PIC_ATK_TRACKER]) = ARRAY_PICS[PICS::PIC_ATK_TRACKER]->scaled(MISSILE_WIDTH, MISSILE_HEIGHT);
+
 	ARRAY_PICS[PICS::PIC_MS_EX] = new QPixmap("./Resources/EX.png");
 	ARRAY_PICS[PICS::PIC_DEF_NOVA] = new QPixmap("./Resources/NOVA.png");
 }

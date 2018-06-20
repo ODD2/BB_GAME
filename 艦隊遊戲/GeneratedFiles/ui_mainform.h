@@ -48,6 +48,7 @@ public:
     QTextEdit *TextBox_BattleLog;
     QLabel *Label_Map;
     QLabel *Label_Battlefield;
+    QLabel *Label_BackGround;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -56,12 +57,13 @@ public:
     {
         if (MainFormClass->objectName().isEmpty())
             MainFormClass->setObjectName(QStringLiteral("MainFormClass"));
-        MainFormClass->resize(1298, 715);
+        MainFormClass->resize(1315, 717);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainFormClass->sizePolicy().hasHeightForWidth());
         MainFormClass->setSizePolicy(sizePolicy);
+        MainFormClass->setToolTipDuration(-1);
         MainFormClass->setDocumentMode(false);
         MainFormClass->setDockNestingEnabled(false);
         MainFormClass->setUnifiedTitleAndToolBarOnMac(false);
@@ -168,13 +170,17 @@ public:
         Label_Battlefield->setGeometry(QRect(20, 40, 570, 570));
         Label_Battlefield->setAutoFillBackground(false);
         Label_Battlefield->setStyleSheet(QStringLiteral("QLabel{background-color: green}"));
+        Label_BackGround = new QLabel(centralWidget);
+        Label_BackGround->setObjectName(QStringLiteral("Label_BackGround"));
+        Label_BackGround->setGeometry(QRect(0, 0, 1311, 661));
         MainFormClass->setCentralWidget(centralWidget);
         Label_Map->raise();
-        Label_Battlefield->raise();
+        Label_BackGround->raise();
         layoutWidget->raise();
+        Label_Battlefield->raise();
         menuBar = new QMenuBar(MainFormClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1298, 21));
+        menuBar->setGeometry(QRect(0, 0, 1315, 21));
         MainFormClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainFormClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -199,6 +205,7 @@ public:
         Label_BattleLog->setText(QApplication::translate("MainFormClass", "BattleLog:", nullptr));
         Label_Map->setText(QString());
         Label_Battlefield->setText(QString());
+        Label_BackGround->setText(QString());
     } // retranslateUi
 
 };
