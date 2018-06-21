@@ -315,7 +315,7 @@ bool BattleField::moveVessel(int team,string Name, double Angle, double Speed) {
 		string log = "Team"; log.push_back(team + 'A');
 
 		if (TEAM[team].count(Name)) {
-			if (!TEAM[team][Name]->move(Angle, Speed)) {
+			if (TEAM[team][Name]->move(Angle, Speed)) {
 				log += " " + Name + " MOVE to " + to_string(Angle) + " as " + to_string(Speed) + "-> Success";
 				BattleLog_TEXT.push_back(log);
 				return true;
@@ -458,6 +458,9 @@ bool BattleField::fireMissile(int team,string Name, string type, ...) {
 
 
 			}
+			else {
+				throw - 4;
+			}
 		}
 		else if (type == ATTACK_TRACKER)
 		{
@@ -486,12 +489,15 @@ bool BattleField::fireMissile(int team,string Name, string type, ...) {
 					return true;
 				}
 			}
-
-			//Battle Log
-			{
-				log = log + " " + Name + " Failed to Fire Tracker Missle -> " + target;
-				BattleLog_TEXT.push_back(log);
+			else {
+				throw - 4;
 			}
+
+			////Battle Log
+			//{
+			//	log = log + " " + Name + " Failed to Fire Tracker Missle -> " + target;
+			//	BattleLog_TEXT.push_back(log);
+			//}
 			return false;
 
 		}
@@ -502,7 +508,7 @@ bool BattleField::fireMissile(int team,string Name, string type, ...) {
 	catch (int e) {
 		if (e == -2) {
 			//ON COOLDOWN
-			log += " " + Name + " CoolDown=" + to_string(TEAM[team][Name]->atkCD);
+			log += " " + Name + " CoolDown = " + to_string(TEAM[team][Name]->atkCD);
 			BattleLog_TEXT.push_back(log);
 			return false;
 		}
@@ -512,10 +518,17 @@ bool BattleField::fireMissile(int team,string Name, string type, ...) {
 			BattleLog_TEXT.push_back(log);
 			return false;
 		}
+		else if (e == -4) {
+			log += " " + Name + " not exist!!! -> Fail";
+			BattleLog_TEXT.push_back(log);
+			return false;
+		}
 	}
 	catch (_2D& e) {
 		//out of distance
 		log += " " + Name + " Fire to (" + to_string(e.x) + "," + to_string(e.y) + ") -> Failed: Out Of Range";
+		BattleLog_TEXT.push_back(log);
+		return false;
 	}
 	catch (vessel *) {
 		//target is nullptr;
@@ -567,7 +580,7 @@ bool BattleField::Special(int team) {
 			LIMIT[team] -= 1;
 			for (auto it = TEAM[0].begin(); it != TEAM[0].end(); it++) {
 				it->second->HP -= 2;
-				EFFECT[EF_LINE].push_back(new LineEffect(QColor(0,255,0), 4, 7, _2D(MAP_INTERVALS / 2, 0), it->second->Location));
+				EFFECT[EF_LINE].push_back(new LineEffect(QColor(0,255,0), 4, 7, _2D(MAP_INTERVALS / 2, MAP_INTERVALS), it->second->Location));
 			}
 			string log = "TeamB Special Attack -> SHALALA , Success";
 			BattleLog_TEXT.push_back(log);

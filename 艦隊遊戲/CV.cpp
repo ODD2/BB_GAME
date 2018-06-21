@@ -52,14 +52,13 @@ missile* CV::attack(string mode, ...)throw(int)
 	else if (mode == CV_ATK_MODE_1) {
 		va_list vl;
 		va_start(vl, mode);
-
+		atkCD = CV_ATTACK_CD;
 
 		_2D& atk_Destination = va_arg(vl, _2D);
-		if (OutOfRange_2D(atk_Destination)) {
+		if (OutOfRange_2D(atk_Destination)||Distance_2D(Location, atk_Destination)>CV_ATTACK_RANGE) {
 			throw atk_Destination;
 		}
 		else {
-			atkCD = CV_ATTACK_CD;
 			return new missile(Location, atk_Destination, CV_MISSILE_SPEED, CV_MISSILE_DAMAGE);
 		}
 

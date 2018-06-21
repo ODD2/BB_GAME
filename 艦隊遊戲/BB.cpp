@@ -61,13 +61,12 @@ missile* BB:: attack(string mode, ...)throw(int)
 		va_list vl;
 		va_start(vl, mode);
 
-
+		atkCD = BB_ATTACK_CD;;
 		_2D& atk_Destination = va_arg(vl, _2D);
-		if (OutOfRange_2D(atk_Destination)) {
+		if (OutOfRange_2D(atk_Destination)|| Distance_2D(Location,atk_Destination)>BB_ATTACK_RANGE) {
 			throw atk_Destination;
 		}
 		else {
-			atkCD = BB_ATTACK_CD;
 			return new missile(Location, atk_Destination, BB_MISSILE_SPEED, BB_MISSILE_DAMAGE);
 		}
 

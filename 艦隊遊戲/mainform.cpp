@@ -138,7 +138,7 @@ inline void MainForm::renderVessle(QPainter& painter) {
 //Setup Pen for TEXT
 	QPen pen_text;
 	pen_text.setWidth(TEXT_PIXEL);
-	pen_text.setBrush(QBrush("black"));
+	pen_text.setBrush(QBrush("white"));
 	QPen pen_saved = painter.pen();
 	painter.setPen(pen_text);
 
@@ -168,22 +168,25 @@ inline void MainForm::renderVessle(QPainter& painter) {
 
 
 			////write vessel name
-			//painter.drawText(
-			//	vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-			//	vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
-			//	vs.name.c_str()
-			//);
+			string name;
+			name.push_back('A' + i); name.push_back(':');
+			name += vs.name;
+			painter.drawText(
+				vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) - height_deviation,
+				name.c_str()
+			);
 
 
 			//
 
 
 			////write vessel location
-			//painter.drawText(
-			//	vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
-			//	vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
-			//	vessel_location.c_str()
-			//);
+		/*	painter.drawText(
+				vs.Location.x * (MAP_WIDTH / MAP_INTERVALS) - width_deviation,
+				vs.Location.y * (MAP_HEIGHT / MAP_INTERVALS) + height_deviation + TEXT_PIXEL,
+				vessel_location.c_str()
+			);*/
 
 		}
 	}

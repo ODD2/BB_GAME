@@ -22,8 +22,8 @@ CG::CG(string name, const _2D& Location) : vessel(name, Location)
 }
 
 bool CG::defense(string mode, ...) {
-	if (defCD) {
-		if (mode == CG_ATK_MODE_1) {
+	if (!defCD) {
+		if (mode == CG_DEF_MODE_1) {
 			va_list vl;
 			va_start(vl, mode);
 			missile& missile_obj = va_arg(vl, missile);
@@ -46,21 +46,21 @@ bool CG::defense(string mode, ...) {
 
 missile* CG::attack(string mode, ...)throw(int)
 {
-	if (!atkCD)
+	if (atkCD)
 	{
 		throw - 2;
 	}
 	else if (mode == CG_ATK_MODE_1 ) {
 		va_list vl;
 		va_start(vl, mode);
-
+		atkCD = CG_ATTACK_CD;
 
 		_2D& atk_Destination = va_arg(vl, _2D);
-		if (OutOfRange_2D(atk_Destination)) {
+		if (OutOfRange_2D(atk_Destination) || Distance_2D(Location, atk_Destination)>CG_ATTACK_RANGE) {
 			throw atk_Destination;
 		}
 		else {
-			atkCD = CG_ATTACK_CD;
+
 			return new missile(Location, atk_Destination, CG_MISSILE_SPEED, CG_MISSILE_DAMAGE);
 		}
 
